@@ -40,10 +40,10 @@ read -p "Would you like to run the inference script on the remote instance? (y/n
 if [[ $run_inference == "y" ]]; then
 
     # Check if user wants instruct or base model
-    read -p "Choose 'base' or 'instruct' model variant." model_variant
+    read -p "Choose 'base' or 'instruct' model variant: " model_variant
 
     echo "Running inference script on remote instance for model variant: $model_variant..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 ~/generate.py --model_variant $model_variant > generate_output.log 2>&1 &" &
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 ~/generate.py --model_variant $model_variant > ${model_variant}_generate_output.log 2>&1 &" &
 else
     echo "Skipping inference script execution."
 fi
