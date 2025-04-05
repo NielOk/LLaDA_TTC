@@ -1,2 +1,2 @@
 # LLaDA_TTC
-Difference inference compute scaling applied to LLaDA
+Diffusion inference compute scaling applied to LLaDA

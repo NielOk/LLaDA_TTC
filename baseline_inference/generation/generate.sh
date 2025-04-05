@@ -2,6 +2,12 @@
 
 #!/bin/bash
 
+ cd ../../
+
+ source .env
+
+ cd baseline_inference/generation
+
 # Prompt user for the API key and instance details
 read -p "Enter the name of your lambda API key (e.g. niel_lambda_api_key): " user_lambda_api_key_name
 USER_LAMBDA_API_KEY=$(eval echo \$$user_lambda_api_key_name)
@@ -24,7 +30,7 @@ fi
 read -p "Would you like to install the requirements on the remote instance? (y/n): " install_requirements
 if [[ $install_requirements == "y" ]]; then
     echo "Installing requirements on remote instance..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers"
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers jinja2==3.1.0"
 else
     echo "Skipping requirements installation."
 fi
@@ -32,8 +38,12 @@ fi
 # Run the infernece script on the remote instance
 read -p "Would you like to run the inference script on the remote instance? (y/n): " run_inference
 if [[ $run_inference == "y" ]]; then
-    echo "Running inference script on remote instance..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 ~/generate.py>generate_output.log 2>&1 &" &
+
+    # Check if user wants instruct or base model
+    read -p "Choose 'base' or 'instruct' model variant." model_variant
+
+    echo "Running inference script on remote instance for model variant: $model_variant..."
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 ~/generate.py --model_variant $model_variant > generate_output.log 2>&1 &" &
 else
     echo "Skipping inference script execution."
 fi
