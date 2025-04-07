@@ -1,0 +1,22 @@
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Instruct:
+- configuration_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Instruct:
+- modeling_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+2025-04-07 05:46:05.183910: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-07 05:46:05.208219: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1744004765.237385    3281 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1744004765.246375    3281 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-04-07 05:46:05.275054: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  17%|█▋        | 1/6 [00:24<02:02, 24.54s/it]Fetching 6 files:  33%|███▎      | 2/6 [00:34<01:03, 15.84s/it]Fetching 6 files:  50%|█████     | 3/6 [00:35<00:27,  9.13s/it]Fetching 6 files: 100%|██████████| 6/6 [00:35<00:00,  5.91s/it]
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 109.11it/s]
+Prompt What is the capital of France?: Mean Entropy: 1.7491, Max Entropy: 4.2364
+Prompt Explain the theory of relativity.: Mean Entropy: 4.8523, Max Entropy: 5.5222
+Prompt How does photosynthesis work?: Mean Entropy: 4.4234, Max Entropy: 5.1891
+Prompt What are the benefits of exercise?: Mean Entropy: 4.5338, Max Entropy: 5.1822
+Prompt Describe the process of cellular respiration.: Mean Entropy: 4.6114, Max Entropy: 5.3205
+Prompt Explain the concept of quantum mechanics.: Mean Entropy: 4.7655, Max Entropy: 5.7694
+Prompt Explain the concept of gravity.: Mean Entropy: 4.9512, Max Entropy: 5.5853
