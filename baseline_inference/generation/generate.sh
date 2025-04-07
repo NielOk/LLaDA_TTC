@@ -2,11 +2,11 @@
 
 #!/bin/bash
 
- cd ../../
+cd ../../
 
- source .env
+source .env
 
- cd baseline_inference/generation
+cd baseline_inference/generation
 
 # Prompt user for the API key and instance details
 read -p "Enter the name of your lambda API key (e.g. niel_lambda_api_key): " user_lambda_api_key_name
@@ -30,7 +30,7 @@ fi
 read -p "Would you like to install the requirements on the remote instance? (y/n): " install_requirements
 if [[ $install_requirements == "y" ]]; then
     echo "Installing requirements on remote instance..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers jinja2==3.1.0"
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers accelerate jinja2==3.1.0"
 else
     echo "Skipping requirements installation."
 fi

@@ -121,3 +121,7 @@ def main():
         input_ids = torch.tensor(input_ids, device=device).unsqueeze(0)
         mean_entropy, max_entropy = calculate_pre_generation_entropy(model, input_ids)
         print(f"Prompt {prompt}: Mean Entropy: {mean_entropy.item():.4f}, Max Entropy: {max_entropy.item():.4f}")
+
+
+if __name__ == '__main__':
+    main()
