@@ -5,10 +5,21 @@ import argparse
 from transformers import AutoTokenizer, AutoModel
 from datasets import load_dataset
 import json
+from dotenv import load_dotenv
+import os
+from huggingface_hub import login
+
 
 TOKENS_TO_GENERATE = 1024 # Number of tokens to generate. Must be divisible by BLOCK_LENGTH.
 BLOCK_LENGTH = 64 # Block length for semi-autoregressive remasking. 
-NUM_STEPS = 1024 # Number of steps for diffusion process. Must be divisible by number of blocks, which is TOKENS_TO_GENERATE // BLOCK_LENGTH
+NUM_STEPS = 16 # Number of steps for diffusion process. Must be divisible by number of blocks, which is TOKENS_TO_GENERATE // BLOCK_LENGTH
+
+
+load_dotenv()
+hugging_face_token = os.getenv("hugging_face_api_key")
+
+# huggingface login
+login(token=hugging_face_token)
 
 
 def add_gumbel_noise(logits, temperature):
@@ -155,7 +166,7 @@ def main():
     }
 
     # Save the entropy dictionary to a JSON file
-    with open(f"prompt_entropy_data.json", "w") as f:
+    with open(f"{args.model_variant}_prompt_entropy_data.json", "w") as f:
         json.dump(prompt_entropy_dict, f, indent=4)
 
 if __name__ == '__main__':

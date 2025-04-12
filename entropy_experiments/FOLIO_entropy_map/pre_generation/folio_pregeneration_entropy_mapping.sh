@@ -14,6 +14,8 @@ USER_LAMBDA_API_KEY=$(eval echo \$$user_lambda_api_key_name)
 read -p "Enter the directory location of your private SSH key: " private_ssh_key
 read -p "Enter the SSH user (e.g. ubuntu): " remote_ssh_user
 read -p "Enter the SSH host/instance address (e.g. 129.146.33.218): " remote_ssh_host
+read -p "Enter the name of your huggingface api key in .env file: " huggingface_api_key_name
+HUGGINGFACE_API_KEY=$(eval echo \$$huggingface_api_key_name)
 
 # Copy inference script to the remote instance
 ENTROPY_MEASUREMENT_SCRIPT_PATH="./folio_pregeneration_entropy_mapping.py"
@@ -30,7 +32,9 @@ fi
 read -p "Would you like to install the requirements on the remote instance? (y/n): " install_requirements
 if [[ $install_requirements == "y" ]]; then
     echo "Installing requirements on remote instance..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers accelerate jinja2==3.1.0 datasets"
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "pip install torch numpy transformers accelerate jinja2==3.1.0 datasets huggingface_hub python-dotenv"
+
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "echo 'hugging_face_api_key=$HUGGINGFACE_API_KEY' >> '/home/$remote_ssh_user/.env'"
 else
     echo "Skipping requirements installation."
 fi
