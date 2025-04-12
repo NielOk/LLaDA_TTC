@@ -2,11 +2,11 @@
 
 #!/bin/bash
 
-cd ../../
+cd ../../../
 
 source .env
 
-cd FOLIO_entropy_map/pre_generation/
+cd entropy_experiments/FOLIO_entropy_map/pre_generation/
 
 # Prompt user for the API key and instance details
 read -p "Enter the name of your lambda API key (e.g. niel_lambda_api_key): " user_lambda_api_key_name
