@@ -2,3 +2,5 @@ torch
 numpy
 transformers
 datasets
+python-dotenv
+huggingface_hub
