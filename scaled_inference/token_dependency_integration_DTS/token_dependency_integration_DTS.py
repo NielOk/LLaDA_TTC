@@ -154,3 +154,55 @@ def generate_with_dts_token_dependency_integration(model, prompt, steps=128, gen
         beam = new_beam[:search_width]
 
     return beam[0][0]
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_variant', choices=['base', 'instruct'], default='instruct',
+                        help="Choose 'base' or 'instruct' model variant.")
+    args = parser.parse_args()
+
+    device = 'cuda'
+
+    if args.model_variant == 'instruct':
+        model_name = 'GSAI-ML/LLaDA-8B-Instruct'
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
+
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        messages = [{"role": "user", "content": prompt}]
+        prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+        input_ids = tokenizer(prompt)['input_ids']
+    else:
+        model_name = 'GSAI-ML/LLaDA-8B-Base'
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
+
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        input_ids = tokenizer(prompt)['input_ids']
+
+    input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
+
+    steps=16
+    gen_length=1024
+    block_length=64
+    temperature=0.
+    cfg_scale=0.
+    mask_id=126336
+    search_width=4
+    branches_per_candidate=2
+    remask_steps=3,
+    entropy_weight=0.6
+    influence_weight=0.3
+    stochasticity_weight=0.1
+    out = generate_with_dts_token_dependency_integration(model, input_ids, steps=steps, gen_length=gen_length, block_length=block_length, temperature=temperature,
+                        cfg_scale=cfg_scale, mask_id=mask_id,
+                        search_width=search_width, branches_per_candidate=branches_per_candidate,
+                        remask_steps=remask_steps,
+                        entropy_weight=entropy_weight, influence_weight=influence_weight, stochasticity_weight=stochasticity_weight)
+
+    print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
+    
+
+if __name__ == '__main__':
+    main()
