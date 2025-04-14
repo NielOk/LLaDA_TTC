@@ -42,7 +42,7 @@ def get_num_transfer_tokens(mask_index, steps):
 
 
 @torch.no_grad()
-def compute_influence_scores(model, x_branch, logits, mask_id, block_start, block_end):
+def compute_kl_influence(model, x_branch, logits, mask_id, block_start, block_end):
     """
     Computes influence score for each token using KL divergence.
     Influence is L2-normalized across each sequence.
@@ -72,7 +72,7 @@ def compute_influence_scores(model, x_branch, logits, mask_id, block_start, bloc
 
 
 @torch.no_grad()
-def generate_with_dts_token_dependency_integration(model, prompt, steps=128, gen_length=128, block_length=128,
+def generate_with_dts_token_kl_dependency_integration(model, prompt, steps=128, gen_length=128, block_length=128,
                       temperature=0., cfg_scale=0., mask_id=126336,
                       search_width=4, branches_per_candidate=2,
                       remask_steps=3,
@@ -118,7 +118,7 @@ def generate_with_dts_token_dependency_integration(model, prompt, steps=128, gen
 
                     block_start = prompt_len + num_block * block_length
                     block_end = prompt_len + (num_block + 1) * block_length
-                    influence = compute_influence_scores(model, x_branch, logits, mask_id, block_start, block_end)
+                    influence = compute_kl_influence(model, x_branch, logits, mask_id, block_start, block_end)
                     noise = torch.rand_like(entropy)
 
                     # Final remask score
@@ -208,7 +208,7 @@ def main():
     entropy_weight=0.6
     influence_weight=0.3
     stochasticity_weight=0.1
-    out = generate_with_dts_token_dependency_integration(model, input_ids, steps=steps, gen_length=gen_length, block_length=block_length, temperature=temperature,
+    out = generate_with_dts_token_kl_dependency_integration(model, input_ids, steps=steps, gen_length=gen_length, block_length=block_length, temperature=temperature,
                         cfg_scale=cfg_scale, mask_id=mask_id,
                         search_width=search_width, branches_per_candidate=branches_per_candidate,
                         remask_steps=remask_steps,

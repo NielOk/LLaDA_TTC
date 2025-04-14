@@ -6,7 +6,7 @@ Original LLaDA site: https://ml-gsai.github.io/LLaDA-demo
 
 ## Overview
 
-LLaDA’s standard inference method remasks low-confidence tokens and refines predictions in a single trajectory. However, this can lead to irreversible early mistakes and overconfidence. This project is focused on developing a multi-trajectory inference framework that stochastically explores and refines multiple candidates across multiple remask-denoise steps. Check the scaled_inference directory for various implementations of this.
+LLaDA’s standard inference method remasks low-confidence tokens and refines predictions in a single trajectory. However, this can lead to irreversible early mistakes and overconfidence. This project is focused on developing a multi-trajectory inference framework that stochastically explores and refines multiple candidates across multiple remask-denoise steps. Check the scaled_inference directory for various implementations of this. The most updated, refined scaled inference scripts that implement the framework of "thinking" I am studying are centralized in scaled_inference/scaled_inference_utils.py
 
 This repository includes:
 - Denoising trajectory search (DTS) with entropy, token dependency, and noise-weighted remask scoring
@@ -24,7 +24,7 @@ This repository includes:
 
 ## Current Experiments
 
-- Denoising Trajectory Search (DTS): maintains a beam of generation candidates, each refined over multiple remask-denoise steps. Token remasking is guided by a combination of entropy, KL-based influence, and stochastic noise. The number of candidates retained per block is controlled by 'search_width'.
+- Denoising Trajectory Search (DTS): maintains a beam of generation candidates, each refined over multiple remask-denoise steps. Token remasking is guided by a combination of entropy, KL/entropy change-based influence, and stochastic noise. The number of candidates retained per block is controlled by 'search_width'.
 
 - Entropy-based analysis: includes pre- and post-generation entropy calculations, with the aim of measuring how uncertainty decays during generation and whether DTS maintains higher entropy (longer "thinking").
 
