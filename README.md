@@ -1,6 +1,6 @@
 # LLaDA_TTC
 
-This repository explores test-time compute (TTC) and denoising trajectory search (DTS) as a framework of adaptive "thinking" for LLaDA, a masked denoising language model. The goal is to design inference-time mechanisms that go beyond the original greedy remasking strategy proposed in the LLaDA paper by allowing more flexible, multi-path generation.
+This repository explores test-time compute (TTC) and denoising trajectory search (DTS) as a framework of adaptive "thinking" for LLaDA, a masked denoising language model. The goal is to design inference-time mechanisms that go beyond the original greedy remasking strategy proposed in the LLaDA paper by allowing more flexible, multi-path generation, ultimately enhancing and extending latent coherence at inference.
 
 Original LLaDA site: https://ml-gsai.github.io/LLaDA-demo  
 
