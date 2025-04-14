@@ -41,32 +41,39 @@ def get_num_transfer_tokens(mask_index, steps):
     return num_transfer_tokens
 
 
+@torch.no_grad()
 def compute_entropy_influence(model, x_branch, mask_id, block_start, block_end):
     """
     Computes influence score for each token by measuring entropy increase when that token is masked.
-    Faster alternative to KL-based influence.
+    Influence is L2-normalized across each sequence.
     """
-    with torch.no_grad():
-        base_logits = model(x_branch).logits  # [B, T, V]
-        base_probs = F.softmax(base_logits, dim=-1)
-        base_entropy = -torch.sum(base_probs * base_probs.log(), dim=-1)  # [B, T]
+    base_logits = model(x_branch).logits  # [B, T, V]
+    base_probs = F.softmax(base_logits, dim=-1)
+    base_entropy = -torch.sum(base_probs * base_probs.log(), dim=-1)  # [B, T]
 
-        influence = torch.zeros_like(base_entropy)
+    influence = torch.zeros_like(base_entropy)
 
-        for j in range(block_start, block_end):
-            masked = x_branch.clone()
-            masked[:, j] = mask_id
-            masked_logits = model(masked).logits
-            masked_probs = F.softmax(masked_logits, dim=-1)
-            masked_entropy = -torch.sum(masked_probs * masked_probs.log(), dim=-1)
+    for j in range(block_start, block_end):
+        masked = x_branch.clone()
+        masked[:, j] = mask_id
+        masked_logits = model(masked).logits
+        masked_probs = F.softmax(masked_logits, dim=-1)
+        masked_entropy = -torch.sum(masked_probs * masked_probs.log(), dim=-1)
 
-            delta = masked_entropy - base_entropy  # [B, T]
-            influence += delta  # token j’s impact on all others
+        delta = masked_entropy - base_entropy  # [B, T]
+        influence += delta
 
-        influence = influence / (block_end - block_start)
-        influence[:, :block_start] = 0
-        influence[:, block_end:] = 0
-        return influence
+    influence = influence / (block_end - block_start)
+
+    # Zero out outside block
+    influence[:, :block_start] = 0
+    influence[:, block_end:] = 0
+
+    # L2 normalization per sequence
+    norm = torch.norm(influence, p=2, dim=1, keepdim=True) + 1e-8
+    influence = influence / norm
+
+    return influence
 
 
 @torch.no_grad()

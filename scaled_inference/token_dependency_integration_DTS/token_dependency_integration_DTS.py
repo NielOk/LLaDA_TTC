@@ -41,21 +41,34 @@ def get_num_transfer_tokens(mask_index, steps):
     return num_transfer_tokens
 
 
+@torch.no_grad()
 def compute_influence_scores(model, x_branch, logits, mask_id, block_start, block_end):
-    with torch.no_grad():
-        influence = torch.zeros_like(logits[..., 0])
-        base_probs = F.softmax(logits, dim=-1)
-        for j in range(block_start, block_end):
-            masked_input = x_branch.clone()
-            masked_input[:, j] = mask_id
-            masked_logits = model(masked_input).logits
-            masked_probs = F.softmax(masked_logits, dim=-1)
-            kl = F.kl_div(masked_probs.log(), base_probs, reduction='none').sum(dim=-1)
-            influence += kl
-        influence = influence / (block_end - block_start)
-        influence[:, :block_start] = 0
-        influence[:, block_end:] = 0
-        return influence
+    """
+    Computes influence score for each token using KL divergence.
+    Influence is L2-normalized across each sequence.
+    """
+    influence = torch.zeros_like(logits[..., 0])  # [B, T]
+    base_probs = F.softmax(logits, dim=-1)        # [B, T, V]
+
+    for j in range(block_start, block_end):
+        masked_input = x_branch.clone()
+        masked_input[:, j] = mask_id
+        masked_logits = model(masked_input).logits
+        masked_probs = F.softmax(masked_logits, dim=-1)
+        kl = F.kl_div(masked_probs.log(), base_probs, reduction='none').sum(dim=-1)
+        influence += kl
+
+    influence = influence / (block_end - block_start)
+
+    # Zero out outside block
+    influence[:, :block_start] = 0
+    influence[:, block_end:] = 0
+
+    # L2 normalization per sequence
+    norm = torch.norm(influence, p=2, dim=1, keepdim=True) + 1e-8
+    influence = influence / norm
+
+    return influence
 
 
 @torch.no_grad()

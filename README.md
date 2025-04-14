@@ -3,7 +3,6 @@
 This repository explores test-time compute (TTC) and denoising trajectory search (DTS) as a framework of adaptive "thinking" for LLaDA, a masked denoising language model. The goal is to design inference-time mechanisms that go beyond the original greedy remasking strategy proposed in the LLaDA paper by allowing more flexible, multi-path generation.
 
 Original LLaDA site: https://ml-gsai.github.io/LLaDA-demo  
-This repository: https://github.com/NielOk/LLaDA_TTC
 
 ## Overview
 
@@ -18,10 +17,10 @@ This repository includes:
 
 ## Directory structure
 
-- 'scaled_inference/' – core inference and scoring functions for the approaches described by this work
-- 'entropy_experiments/' – entropy maps and analysis on FOLIO
-- 'baseline_inference/' – original LLaDA generate.py runs (instruct/base)
-- 'benchmark_pipeline_tests' - test scripts for working with benchmarks
+- scaled_inference/ – core inference and scoring functions for the approaches described by this work
+- entropy_experiments/ – entropy maps and analysis on FOLIO
+- baseline_inference/ – original LLaDA generate.py runs (instruct/base)
+- benchmark_pipeline_tests - test scripts for working with benchmarks
 
 ## Current Experiments
 
