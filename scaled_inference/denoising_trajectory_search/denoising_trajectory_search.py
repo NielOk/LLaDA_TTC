@@ -41,7 +41,6 @@ def get_num_transfer_tokens(mask_index, steps):
     return num_transfer_tokens
 
 
-@ torch.no_grad()
 @torch.no_grad()
 def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128,
                       temperature=0., cfg_scale=0., mask_id=126336,
@@ -49,19 +48,6 @@ def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128
                       remask_steps=3, alpha=0.7):
     """
     Denoising Trajectory Search (DTS): multi-path inference for LLaDA-style diffusion LMs.
-    Args:
-        model: Mask predictor.
-        prompt: A tensor of shape (1, L).
-        steps: Sampling steps, less than or equal to gen_length.
-        gen_length: Generated answer length.
-        block_length: Block length, less than or equal to gen_length. If less than gen_length, it means using semi_autoregressive remasking.
-        temperature: Categorical distribution sampling temperature.
-        cfg_scale: Unsupervised classifier-free guidance scale.
-        mask_id: The token id of [MASK] is 126336.
-        search_width: The number of candidates to keep at each step.
-        branches_per_candidate: The number of branches to explore for each candidate.
-        remask_steps: The number of remask-denoise iterations.
-        alpha: The weight for entropy in the remasking score.
     """
     prompt_len = prompt.shape[1]
     total_len = prompt_len + gen_length
@@ -81,7 +67,7 @@ def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128
                 x_branch = x.clone()
 
                 for _ in range(remask_steps):
-                    # CFG forward pass (initial prediction)
+                    # CFG forward pass
                     if cfg_scale > 0.:
                         un_x = x_branch.clone()
                         un_x[:, :prompt_len] = mask_id
@@ -98,23 +84,20 @@ def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128
                     rand = torch.rand_like(entropy)
                     remask_score = alpha * entropy + (1 - alpha) * rand
 
-                    # Restrict scoring to current block
                     block_start = prompt_len + num_block * block_length
                     block_end = prompt_len + (num_block + 1) * block_length
                     remask_score[:, :block_start] = -float('inf')
                     remask_score[:, block_end:] = -float('inf')
 
-                    # Select top-k tokens to remask
                     k = block_length // steps_per_block
                     remask_index = torch.zeros_like(x_branch, dtype=torch.bool)
                     for b in range(x_branch.shape[0]):
                         _, idx = torch.topk(remask_score[b], k)
                         remask_index[b, idx] = True
 
-                    # Remask them
                     x_branch[remask_index] = mask_id
 
-                    # Forward pass again after remasking
+                    # Redenoise using Gumbel-sampled predictions
                     if cfg_scale > 0.:
                         un_x = x_branch.clone()
                         un_x[:, :prompt_len] = mask_id
@@ -125,12 +108,10 @@ def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128
                     else:
                         logits = model(x_branch).logits
 
-                    logits = logits.to(torch.float64)
-                    gumbel_noise = -torch.empty_like(logits).exponential_().log()
-                    logits_with_noise = logits + gumbel_noise * temperature
-                    x0 = torch.argmax(logits_with_noise, dim=-1)
+                    # Apply Gumbel noise before selecting token
+                    gumbel_logits = add_gumbel_noise(logits, temperature)
+                    x0 = torch.argmax(gumbel_logits, dim=-1)
 
-                    # Apply new predictions
                     x_branch[remask_index] = x0[remask_index]
 
                 # Score full sequence (mean entropy over masked positions)
@@ -142,7 +123,6 @@ def generate_with_dts(model, prompt, steps=128, gen_length=128, block_length=128
 
                 new_beam.append((x_branch, score))
 
-        # Keep best `search_width` candidates
         new_beam.sort(key=lambda tup: tup[1].item())
         beam = new_beam[:search_width]
 
