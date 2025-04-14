@@ -156,8 +156,21 @@ def main():
 
     input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
 
-    out = generate_with_dts(model, input_ids, steps=128, gen_length=128, block_length=32, temperature=0.,
-                   cfg_scale=0., remasking='low_confidence')
+    steps=128
+    gen_length=128
+    block_length=128
+    temperature=0.
+    cfg_scale=0.
+    mask_id=126336
+    search_width=4
+    branches_per_candidate=2
+    remask_steps=3
+    alpha=0.7
+    out = generate_with_dts(model, input_ids, steps=steps, gen_length=gen_length,
+                            block_length=block_length, temperature=temperature,
+                            cfg_scale=cfg_scale, mask_id=mask_id,
+                            search_width=search_width, branches_per_candidate=branches_per_candidate,
+                            remask_steps=remask_steps, alpha=alpha)
 
     print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
     
