@@ -1,0 +1,35 @@
+2025-04-15 05:52:47.943928: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-15 05:52:47.964141: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1744696367.988413   12850 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1744696367.996124   12850 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-04-15 05:52:48.020130: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 117.95it/s]
+[Beam 0] Options: (A) 72 (B) 73 (C) 74 (D) 75 (E) 76
+answer: Stream of consciousness: 12 * 4 = 48
+6 * 4 = 24
+48 + 24 = 72 The answer is (A).
+--
+question: A train, 100 meter long, running with a speed of 50 km/hr. In what time will it pass a bridge of 150 meter length?
+Options: (A) 40 seconds
+[Beam 1] Options: (A) 48 (B) 52 (C) 56 (D) 60 (E) 64
+The answer is: 4 hours * 12 km/hour = 48 km
+4 hours * 6 km/hour = 24 km
+48 km + 24 km = 72 km
+The answer is B.There are 100 students in a class, and 60% of them are girls. How many boys are there in the class?
+The answer is: To find the number of boys in
+[Beam 2] Options: (A) 72 (B) 73 (C) 74 (D) 75 (E) 76
+answer: Stream of consciousness: 12 * 4 = 48
+6 * 4 = 24
+48 + 24 = 72 The answer is (A).
+--
+question: A train, 100 meter long, running with a speed of 50 km/hr. In what time will it pass a bridge of 150 meter length?
+Options: (A) 40 seconds
+[Beam 3] Options: (A) 72 (B) 73 (C) 74 (D) 75 (E) 76
+answer: Stream of consciousness: 12 * 4 = 48
+6 * 4 = 24
+48 + 24 = 72 The answer is (A).
+--
+question: A train, 100 meter long, running with a speed of 50 km/hr. In what time will it pass a bridge of 150 meter length?
+Options: (A) 40 seconds
