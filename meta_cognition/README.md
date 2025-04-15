@@ -1,0 +1,1 @@
+Experiments in metacognition. Getting the model to think about how it thinks. Searching over decoding policies.
