@@ -6,7 +6,7 @@ cd ../../
 
 source .env
 
-cd scaled_inference/entropy_influence_integration_DTS/
+cd scaled_inference/beam_search/
 
 # Prompt user for the API key and instance details
 read -p "Enter the name of your lambda API key (e.g. niel_lambda_api_key): " user_lambda_api_key_name
@@ -16,7 +16,7 @@ read -p "Enter the SSH user (e.g. ubuntu): " remote_ssh_user
 read -p "Enter the SSH host/instance address (e.g. 129.146.33.218): " remote_ssh_host
 
 # Copy inference script to the remote instance
-GENERATE_SCRIPT_PATH="./entropy_influence_integration_DTS.py"
+GENERATE_SCRIPT_PATH="./beam_search.py"
 
 read -p "Would you like to copy the inference script to the remote instance? (y/n): " copy_script
 if [[ $copy_script == "y" ]]; then
