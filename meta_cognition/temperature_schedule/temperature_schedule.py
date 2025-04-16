@@ -5,6 +5,7 @@ import argparse
 
 from transformers import AutoTokenizer, AutoModel
 
+
 def add_gumbel_noise(logits, temperature):
     '''
     The Gumbel max is a method for sampling categorical distributions.
@@ -41,42 +42,7 @@ def get_num_transfer_tokens(mask_index, steps):
 
 
 @ torch.no_grad()
-def calculate_pre_generation_entropy(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
-             cfg_scale=0., remasking='low_confidence', mask_id=126336):
-    '''
-    Args:
-        model: Mask predictor.
-        prompt: A tensor of shape (1, L).
-        steps: Sampling steps, less than or equal to gen_length.
-        gen_length: Generated answer length.
-        block_length: Block length, less than or equal to gen_length. If less than gen_length, it means using semi_autoregressive remasking.
-        temperature: Categorical distribution sampling temperature.
-        cfg_scale: Unsupervised classifier-free guidance scale.
-        remasking: Remasking strategy. 'low_confidence' or 'random'.
-        mask_id: The toke id of [MASK] is 126336.
-    '''
-    x = torch.full((1, prompt.shape[1] + gen_length), mask_id, dtype=torch.long).to(model.device)
-    x[:, :prompt.shape[1]] = prompt.clone()
-
-    initial_logits = model(x).logits  # (batch, seq_len, vocab_size)
-    probs = F.softmax(initial_logits.to(torch.float64), dim=-1)  # high precision
-
-    # Compute entropy over the vocabulary for each token
-    token_entropy = -torch.sum(probs * torch.log(probs + 1e-10), dim=-1)  # (batch, seq_len)
-
-    # Only consider masked positions
-    mask_index = (x == mask_id)
-    masked_token_entropy = token_entropy[mask_index]  # 1D tensor
-
-    # Compute statistics
-    mean_entropy = masked_token_entropy.mean()
-    max_entropy = masked_token_entropy.max()
-
-    return mean_entropy, max_entropy
-
-
-@ torch.no_grad()
-def generate(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
+def generate(model, prompt, steps=128, gen_length=128, block_length=128, temperature_schedule=[],
              cfg_scale=0., remasking='low_confidence', mask_id=126336):
     '''
     Args:
@@ -116,7 +82,7 @@ def generate(model, prompt, steps=128, gen_length=128, block_length=128, tempera
             else:
                 logits = model(x).logits
 
-            logits_with_noise = add_gumbel_noise(logits, temperature=temperature)
+            logits_with_noise = add_gumbel_noise(logits, temperature=temperature_schedule[i])
             x0 = torch.argmax(logits_with_noise, dim=-1) # b, l
 
             if remasking == 'low_confidence':
@@ -142,37 +108,6 @@ def generate(model, prompt, steps=128, gen_length=128, block_length=128, tempera
     return x
 
 
-@torch.no_grad()
-def calculate_post_generation_entropy(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
-             cfg_scale=0., remasking='low_confidence', mask_id=126336):
-    '''
-    Calculates mean and max entropy *after* generation, using the same masked positions
-    as in pre-generation entropy for a fair comparison.
-    '''
-    # Generate the output
-    output = generate(model, prompt, steps, gen_length, block_length, temperature, cfg_scale, remasking, mask_id)
-
-    # Mask identifying generated (non-prompt) positions
-    gen_mask = torch.zeros_like(output, dtype=torch.bool)
-    gen_mask[:, prompt.shape[1]:] = True
-
-    # Feed the generated sequence back into the model
-    final_logits = model(output).logits  # (batch, seq_len, vocab_size)
-    probs = F.softmax(final_logits.to(torch.float64), dim=-1)  # high precision
-
-    # Compute entropy at each position
-    token_entropy = -torch.sum(probs * torch.log(probs + 1e-10), dim=-1)  # (batch, seq_len)
-
-    # Filter to only generated tokens
-    gen_token_entropy = token_entropy[gen_mask]  # 1D tensor
-
-    # Compute statistics
-    mean_entropy = gen_token_entropy.mean()
-    max_entropy = gen_token_entropy.max()
-
-    return mean_entropy, max_entropy
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_variant', choices=['base', 'instruct'], default='instruct',
@@ -181,51 +116,31 @@ def main():
 
     device = 'cuda'
 
-    # Prompts to evaluate entropy of model inference start for
-    prompts = [
-            "What is the capital of France?",
-            "Explain the theory of relativity.",
-            "How does photosynthesis work?",
-            "What are the benefits of exercise?",
-            "Describe the process of cellular respiration.",
-            "Explain the concept of quantum mechanics.",
-            "Explain the concept of gravity."
-        ]
-
     if args.model_variant == 'instruct':
         model_name = 'GSAI-ML/LLaDA-8B-Instruct'
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
 
-        input_ids_list = []
-        for prompt in prompts:
-            messages = [{"role": "user", "content": prompt}]
-            prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
-            input_ids = tokenizer(prompt)['input_ids']
-            input_ids_list.append(input_ids)
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        messages = [{"role": "user", "content": prompt}]
+        prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+        input_ids = tokenizer(prompt)['input_ids']
     else:
         model_name = 'GSAI-ML/LLaDA-8B-Base'
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
-        
-        input_ids_list = []
-        for prompt in prompts:
-            input_ids = tokenizer(prompt)['input_ids']
-            input_ids_list.append(input_ids)
 
-    # Calculate entropys
-    for i in range(len(input_ids_list)):
-        input_ids = input_ids_list[i]
-        prompt = prompts[i]
-        input_ids = torch.tensor(input_ids, device=device).unsqueeze(0)
-        print(f"Prompt: {prompt}")
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        input_ids = tokenizer(prompt)['input_ids']
 
-        # Pre-generation entropy
-        mean_pre_generation_entropy, max_pre_generation_entropy = calculate_pre_generation_entropy(model, input_ids)
-        print(f"Mean Pre-Generation Entropy: {mean_pre_generation_entropy.item():.4f}, Max Pre-Generation Entropy: {max_pre_generation_entropy.item():.4f}")
+    input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
 
-        mean_post_generation_entropy, max_post_generation_entropy = calculate_post_generation_entropy(model, input_ids)
-        print(f"Mean Post-Generation Entropy: {mean_post_generation_entropy.item():.4f}, Max Post-Generation Entropy: {max_post_generation_entropy.item():.4f}")
+    total_steps = 128
+    temperature_schedule = torch.linspace(1.0, 0.1, steps=total_steps).tolist() # Example: linear decay temperature schedule from 1.0 to 0.1
+    out = generate(model, input_ids, steps=128, gen_length=128, block_length=32, temperature_schedule=temperature_schedule,
+                   cfg_scale=0., remasking='low_confidence')
+
+    print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
 
 
 if __name__ == '__main__':
