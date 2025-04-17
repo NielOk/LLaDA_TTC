@@ -1,0 +1,23 @@
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Base:
+- configuration_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Base:
+- modeling_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+2025-04-17 07:00:50.090036: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-17 07:00:50.953157: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1744873251.297239    2549 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1744873251.385963    2549 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-04-17 07:00:52.113809: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  17%|█▋        | 1/6 [02:36<13:02, 156.46s/it]Fetching 6 files:  33%|███▎      | 2/6 [02:57<05:06, 76.75s/it] Fetching 6 files:  83%|████████▎ | 5/6 [02:57<00:21, 21.91s/it]Fetching 6 files: 100%|██████████| 6/6 [02:57<00:00, 29.65s/it]
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 102.00it/s]
+
+Options: (A) 100 (B) 110 (C) 120 (D) 130 (E) 140
+The answer is 12 * 4 = 48 km in 4 hours
+12 * 4 = 48 km in 4 hours
+6 * 4 = 24 km in 4 hours
+48 km + 24 km = 72 km in eight hours
+12 * 4 = 48 km in 4 hours
+6 * 4 = 24 km

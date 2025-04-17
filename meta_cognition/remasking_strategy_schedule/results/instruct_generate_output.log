@@ -1,0 +1,19 @@
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Instruct:
+- configuration_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/GSAI-ML/LLaDA-8B-Instruct:
+- modeling_llada.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+2025-04-17 07:08:39.288143: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-04-17 07:08:39.311450: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1744873719.338705    2890 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1744873719.347505    2890 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-04-17 07:08:39.375273: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  17%|█▋        | 1/6 [02:27<12:15, 147.14s/it]Fetching 6 files:  33%|███▎      | 2/6 [02:45<04:46, 71.59s/it] Fetching 6 files:  50%|█████     | 3/6 [02:47<01:59, 39.77s/it]Fetching 6 files: 100%|██████████| 6/6 [02:47<00:00, 27.96s/it]
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 102.97it/s]
+Lily can run 12 kilometers per hour for 4 hours, so she can run a total of 12 * 4 = 48 kilometers.
+After that, she runs 6 kilometers per hour, for the remaining 4 hours, so she can run a total of 6 * 4 = 24 kilometers.
+Therefore, Lily can run a total of 48 + 24 = 72 kilometers in 8 hours.
+Arriving at 72
