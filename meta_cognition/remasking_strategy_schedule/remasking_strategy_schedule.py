@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 import argparse
+import random
 
 from transformers import AutoTokenizer, AutoModel
 
@@ -42,8 +43,8 @@ def get_num_transfer_tokens(mask_index, steps):
 
 
 @ torch.no_grad()
-def generate(model, prompt, steps=128, gen_length=128, block_length=128, temperature_schedule=[],
-             cfg_scale=0., remasking='low_confidence', mask_id=126336):
+def generate(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
+             cfg_scale=0., remasking_strategy_schedule=[], mask_id=126336):
     '''
     Args:
         model: Mask predictor.
@@ -82,8 +83,10 @@ def generate(model, prompt, steps=128, gen_length=128, block_length=128, tempera
             else:
                 logits = model(x).logits
 
-            logits_with_noise = add_gumbel_noise(logits, temperature=temperature_schedule[num_block * steps + i])
+            logits_with_noise = add_gumbel_noise(logits, temperature=temperature)
             x0 = torch.argmax(logits_with_noise, dim=-1) # b, l
+
+            remasking = remasking_strategy_schedule[num_block * steps + i]
 
             if remasking == 'low_confidence':
                 p = F.softmax(logits.to(torch.float64), dim=-1)
@@ -135,13 +138,15 @@ def main():
 
     input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
 
+    # Random remasking strategy schedule
     total_steps = 128
-    temperature_schedule = torch.linspace(1.0, 0.1, steps=total_steps).tolist() # Example: linear decay temperature schedule from 1.0 to 0.1
-    out = generate(model, input_ids, steps=128, gen_length=128, block_length=32, temperature_schedule=temperature_schedule,
-                   cfg_scale=0., remasking='low_confidence')
+    remasking_strategy_options = ["low_confidence", "random"]
+    remasking_strategy_schedule = [random.choice(remasking_strategy_options) for _ in range(total_steps)]
+
+    out = generate(model, input_ids, steps=total_steps, gen_length=128, block_length=32, temperature=0.,
+                   cfg_scale=0., remasking_strategy_schedule=remasking_strategy_schedule)
 
     print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
-
 
 if __name__ == '__main__':
     main()
