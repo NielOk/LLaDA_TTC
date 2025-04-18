@@ -16,7 +16,7 @@ read -p "Enter the SSH user (e.g. ubuntu): " remote_ssh_user
 read -p "Enter the SSH host/instance address (e.g. 129.146.33.218): " remote_ssh_host
 
 # Copy inference script to the remote instance
-GENERATE_SCRIPT_PATH="./block_schedule_and_extra_proportion.py"
+GENERATE_SCRIPT_PATH="./block_schedule_and_extra_step_proportion.py"
 
 read -p "Would you like to copy the inference script to the remote instance? (y/n): " copy_script
 if [[ $copy_script == "y" ]]; then
