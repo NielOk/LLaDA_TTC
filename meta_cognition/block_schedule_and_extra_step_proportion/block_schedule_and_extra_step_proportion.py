@@ -128,10 +128,11 @@ def main():
 
     input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
 
-    block_schedule = [32, 48, 48]  # must sum to gen_length
-    extra_step_proportions = [0.5, 0.3, 0.2]  # must sum to 1.0
+    block_schedule = [32, 32, 32, 32]  # must sum to gen_length
+    extra_step_proportions = [0.25, 0.25, 0.25, 0.25]  # must sum to 1.0
+    total_steps = 128
 
-    out = generate(model, input_ids, steps=160, gen_length=128, block_schedule=block_schedule,
+    out = generate(model, input_ids, steps=total_steps, gen_length=128, block_schedule=block_schedule,
                    extra_step_proportions=extra_step_proportions, temperature=0., cfg_scale=0., remasking='low_confidence')
 
     print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
