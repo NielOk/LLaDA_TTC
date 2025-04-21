@@ -42,8 +42,14 @@ def sample_partial_decoding_policy(cur_decoding_policy_state=None, possible_temp
 
     # Sample a temperature
     if cur_step < steps:
+        # Sample a temperature from the possible temperatures
         temperature = random.choice(possible_temperatures)
         cur_decoding_policy_state["temperature_schedule"].append(temperature)
+
+        # Sample a remasking strategy
+        remasking_strategy = random.choice(possible_remasking_strategies)
+        cur_decoding_policy_state["remasking_strategy_schedule"].append(remasking_strategy)
+
     else:
         print("All steps have been sampled. No more partial decoding policies can be sampled.")
         return cur_decoding_policy_state
@@ -67,6 +73,10 @@ def main():
                                                                    steps=steps, 
                                                                    gen_length=gen_length, 
                                                                    max_num_blocks=max_num_blocks)
+        
+    print(cur_decoding_policy_state)
+    print(len(cur_decoding_policy_state["temperature_schedule"]))
+    print(len(cur_decoding_policy_state["remasking_strategy_schedule"]))
 
 
 if __name__ == '__main__':
