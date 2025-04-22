@@ -95,10 +95,6 @@ def main():
                                                                    gen_length=gen_length, 
                                                                    max_num_blocks=max_num_blocks)
         
-    print(cur_decoding_policy_state)
-    print(len(cur_decoding_policy_state["temperature_schedule"]))
-    print(len(cur_decoding_policy_state["remasking_strategy_schedule"]))
-
 
 if __name__ == '__main__':
     main()
