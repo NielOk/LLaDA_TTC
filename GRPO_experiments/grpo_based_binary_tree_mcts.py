@@ -2,10 +2,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import random
 
 class Node:
-    def __init__(self, depth, max_depth, parent=None):
+    def __init__(self, depth, max_depth, theta_groups, parent=None):
         self.parent = parent
         self.depth = depth
         self.max_depth = max_depth
@@ -13,40 +12,49 @@ class Node:
         self.visits = 0
         self.value = 0.0
         self.id = None
-
-        if depth < max_depth:
-            self.theta = torch.nn.Parameter(torch.zeros(2))  # Learnable logits for GRPO
-        else:
-            self.true_value = np.random.normal()
-            self.is_leaf = True
-            self.theta = None
-        self.baseline = 0.0
+        self.theta_groups = theta_groups
         self.is_leaf = depth == max_depth
+
+        if self.is_leaf:
+            self.true_value = np.random.normal()
+        else:
+            self.true_value = None
 
     def expand(self):
         if not self.children and not self.is_leaf:
             self.children = [
-                Node(self.depth + 1, self.max_depth, parent=self),
-                Node(self.depth + 1, self.max_depth, parent=self)
+                Node(self.depth + 1, self.max_depth, self.theta_groups, parent=self),
+                Node(self.depth + 1, self.max_depth, self.theta_groups, parent=self)
             ]
 
     def get_policy(self):
-        if self.theta is None:
+        if self.is_leaf:
             return None
-        return torch.distributions.Categorical(logits=self.theta)
+        return torch.distributions.Categorical(logits=self.theta_groups[self.depth])
 
     def choose_action(self):
         dist = self.get_policy()
         action = dist.sample()
         log_prob = dist.log_prob(action)
         return action.item(), log_prob
-    
-# To get full tree structure
+
+def initialize_theta_groups(max_depth, n_actions=2):
+    return {
+        depth: torch.nn.Parameter(torch.zeros(n_actions))
+        for depth in range(max_depth)
+    }
+
 def expand_full_tree(node):
     if not node.is_leaf:
         node.expand()
         expand_full_tree(node.children[0])
         expand_full_tree(node.children[1])
+
+def assign_node_ids(node, counter=[0]):
+    node.id = counter[0]
+    counter[0] += 1
+    for child in node.children:
+        assign_node_ids(child, counter)
 
 def rollout_and_grpo(root):
     node = root
@@ -64,24 +72,19 @@ def rollout_and_grpo(root):
 
 def backprop_grpo(path, log_probs, reward):
     for node, log_prob in zip(path, log_probs):
-        advantage = reward - node.baseline
+        advantage = reward - node.value  # simple baseline
         loss = -log_prob * advantage
         loss.backward()
-        node.baseline = 0.9 * node.baseline + 0.1 * reward
 
-    # Update values and visits
     for node in path:
         node.visits += 1
         node.value += (reward - node.value) / node.visits
 
-def collect_params(node):
-    if node.is_leaf:
-        return []
-    return [node.theta] + collect_params(node.children[0]) + collect_params(node.children[1])
+def collect_group_params(theta_groups):
+    return list(theta_groups.values())
 
-def train(root, episodes=1000, lr=0.05):
-    all_params = [p for p in collect_params(root)]
-    optimizer = optim.SGD(all_params, lr=lr)
+def train(root, theta_groups, episodes=1000, lr=0.05):
+    optimizer = optim.SGD(collect_group_params(theta_groups), lr=lr)
 
     for _ in range(episodes):
         optimizer.zero_grad()
@@ -96,12 +99,6 @@ def best_path(root):
         path.append(root)
     return path
 
-def assign_node_ids(node, counter=[0]):
-    node.id = counter[0]
-    counter[0] += 1
-    for child in node.children:
-        assign_node_ids(child, counter)
-
 def collect_tree(node):
     all_nodes = [node]
     for child in node.children:
@@ -114,14 +111,15 @@ if __name__ == "__main__":
     torch.manual_seed(42)
 
     max_depth = 6
-    root = Node(depth=0, max_depth=max_depth)
+    theta_groups = initialize_theta_groups(max_depth)
+    root = Node(depth=0, max_depth=max_depth, theta_groups=theta_groups)
     assign_node_ids(root)
     expand_full_tree(root)
 
-    print("Running GRPO-based MCTS...\n")
-    train(root, episodes=1000)
+    print("Running GRPO with depth-shared groups...\n")
+    train(root, theta_groups, episodes=1000)
 
-    print("Best Path from Root to Leaf:")
+    print("\nBest Path from Root to Leaf:")
     path = best_path(root)
     for node in path:
         print(f"  Depth {node.depth}: value = {node.value:.2f}, visits = {node.visits}")
