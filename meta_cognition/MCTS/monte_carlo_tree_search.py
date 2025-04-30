@@ -8,24 +8,17 @@ import random
 
 from transformers import AutoTokenizer, AutoModel
 from decoding_policy_state import DecodingPolicyState
-
-@ torch.no_grad()
-def generate_with_decoding_policy(model, prompt, decoding_policy, steps=128, gen_length=128, block_length=128, cfg_scale=0., mask_id=126336):
-    '''
-    Args:
-        model: Mask predictor.
-        prompt: A tensor of shape (1, L).
-        decoding_policy: Decoding policy state object.
-        steps: Sampling steps, less than or equal to gen_length.
-        gen_length: Generated answer length.
-        block_length: Block length, less than or equal to gen_length. If less than gen_length, it means using semi_autoregressive remasking.
-        cfg_scale: Unsupervised classifier-free guidance scale.
-        mask_id: The token id of [MASK] is 126336.
-    '''
-    pass
+from policy_based_decoding_utils import *
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_variant', choices=['base', 'instruct'], default='instruct',
+                        help="Choose 'base' or 'instruct' model variant.")
+    args = parser.parse_args()
+
+    device = 'cuda'
+
     cur_decoding_policy_state = None
     possible_temperatures = [i / 10 for i in range(0, 11)]
     possible_remasking_strategies= ["low_confidence", "random"]
@@ -47,6 +40,29 @@ def main():
     print("Decoding policy state step id: ", decoding_policy_state.step_id)
     print("Decoding policy state block id: ", decoding_policy_state.block_id)
     print("Decoding policy state block end step id: ", decoding_policy_state.block_end_step_id)
+
+    # Initialize the model and tokenizer
+    if args.model_variant == 'instruct':
+        model_name = 'GSAI-ML/LLaDA-8B-Instruct'
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
+
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        messages = [{"role": "user", "content": prompt}]
+        prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+        input_ids = tokenizer(prompt)['input_ids']
+    else:
+        model_name = 'GSAI-ML/LLaDA-8B-Base'
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
+
+        prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
+        input_ids = tokenizer(prompt)['input_ids']
+
+    input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
+    out = generate_with_decoding_policy(model, input_ids, decoding_policy_state, steps=steps, gen_length=gen_length, cfg_scale=0., mask_id=126336)
+    print(tokenizer.batch_decode(out[:, input_ids.shape[1]:], skip_special_tokens=True)[0])
+
 
 if __name__ == '__main__':
     main()
