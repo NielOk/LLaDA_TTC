@@ -6,7 +6,7 @@ cd ../../
 
 source .env
 
-cd meta_cognition/MCTS/
+cd meta_cognition/decoding_policy_based_generation/
 
 # Prompt user for the API key and instance details
 read -p "Enter the name of your lambda API key (e.g. niel_lambda_api_key): " user_lambda_api_key_name
