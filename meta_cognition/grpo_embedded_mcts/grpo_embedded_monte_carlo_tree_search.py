@@ -1,4 +1,4 @@
-""" Monte Carlo Tree Search over Decoding Policies """
+""" GRPO-embedded Monte Carlo Tree Search over Decoding Policies """
 
 import torch
 import numpy as np
