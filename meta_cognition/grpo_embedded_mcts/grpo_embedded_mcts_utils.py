@@ -4,11 +4,6 @@ from decoding_policy_state import DecodingPolicyState
 from policy_based_decoding_utils import *
 from mcts_node import MCTSNode
 
-def evaluate_policy(model, prompt, policy_state):
-    output = generate_with_decoding_policy(model, prompt, policy_state)
-    reward = compute_reward(output, prompt)  # You define this
-    return reward
-
 def expand_node(node, branching_factor, steps, **sampling_kwargs):
     '''
     **sampling_kwargs format example: 
@@ -43,21 +38,36 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
     
     return state
 
-def grpo_update(children, model, prompt):
+def grpo_update(children, model, prompt, reference_label, **sampling_kwargs):
     rewards = []
+
     for child in children:
-        reward = evaluate_policy(model, prompt, child.state)
+        # Rollout the child policy to full length
+        completed_state = rollout_policy(child.state, **sampling_kwargs)
+
+        # Evaluate the rollout-completed policy
+        output = generate_with_decoding_policy(
+            model,
+            prompt,
+            completed_state,
+            steps=sampling_kwargs["steps"],
+            gen_length=sampling_kwargs["gen_length"]
+        )
+        reward = compute_reward(output, reference_label)
+
+        # Update the node stats
         child.value_sum += reward
         child.visits += 1
         rewards.append(reward)
-    
-    # Normalize within the group (GRPO)
+
+    # GRPO: group-relative normalization
     mean_r = sum(rewards) / len(rewards)
     for child, r in zip(children, rewards):
-        child.value_sum += (r - mean_r)
+        child.value_sum += (r - mean_r)  # relative to sibling mean
 
-def search(model, prompt, steps=128, iters=30, branching_factor=2, **sampling_kwargs):
+def search(model, prompt, reference_label, steps=128, iters=30, branching_factor=2, **sampling_kwargs):
     root = MCTSNode(state=DecodingPolicyState())
+
     for _ in range(iters):
         node = root
         while not node.is_terminal(steps) and node.is_fully_expanded(branching_factor):
@@ -65,16 +75,16 @@ def search(model, prompt, steps=128, iters=30, branching_factor=2, **sampling_kw
 
         if not node.is_terminal(steps):
             children = expand_node(node, branching_factor, steps, **sampling_kwargs)
-            grpo_update(children, model, prompt)
+            grpo_update(children, model, prompt, reference_label, **sampling_kwargs)
 
-    # Return best full policy
+    # Return best child of root (could generalize to full tree search)
     best_leaf = max(root.children, key=lambda child: child.value_sum / child.visits)
     return best_leaf.state
 
-def iterate_prompts(model, prompts, steps=128, iters=30, branching_factor=2, **kwargs):
+def iterate_prompts(model, prompts, labels, steps=128, iters=30, branching_factor=2, **kwargs):
     best_policies = []
-    for prompt in prompts:
-        policy = search(model, prompt, steps=steps, iters=iters, branching_factor=branching_factor, **kwargs)
+    for prompt, label in zip(prompts, labels):
+        policy = search(model, prompt, reference_label=label, steps=steps, iters=iters, branching_factor=branching_factor, **kwargs)
         best_policies.append(policy)
     return best_policies
 
