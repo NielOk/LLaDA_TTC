@@ -42,7 +42,6 @@ def grpo_update(children, model, prompt):
     for child, r in zip(children, rewards):
         child.value_sum += (r - mean_r)
 
-
 def search(model, prompt, steps=128, iters=30, branching_factor=2, **sampling_kwargs):
     root = MCTSNode(state=DecodingPolicyState())
     for _ in range(iters):
