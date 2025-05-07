@@ -20,7 +20,7 @@ def sample_questions(ds, num_questions_to_sample=100):
         conclusion = sample["conclusion"]
         label = sample["label"]
 
-        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and answer with one of: "False", "Uncertain", or "True".'
+        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following words by itself as your answer: "False", "Uncertain", or "True".'
         formatted_questions.append((formatted_question))
         labels.append(label)
 
