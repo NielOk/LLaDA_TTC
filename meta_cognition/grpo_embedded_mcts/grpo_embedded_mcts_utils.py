@@ -30,7 +30,7 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
     """
     Complete the decoding policy from its current step_id to `steps`
     by randomly sampling within the structured per-block rules.
-    
+        
     Returns a fully-sampled decoding policy.
     """
 
