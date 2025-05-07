@@ -25,13 +25,6 @@ class DecodingPolicyState():
 
         # Sample a new partial policy state
         if self.step_id < steps:
-            # Sample a temperature from the possible temperatures
-            temperature = random.choice(possible_temperatures)
-            self.temperature_schedule.append(temperature)
-
-            # Sample a remasking strategy
-            remasking_strategy = random.choice(possible_remasking_strategies)
-            self.remasking_strategy_schedule.append(remasking_strategy)
 
             # Sample a block length and extra step proportion if eligible
             if self.step_id == self.block_end_step_id and self.block_id < max_num_blocks:
@@ -46,6 +39,12 @@ class DecodingPolicyState():
                     extra_step_proportion = round(random.uniform(0, 1 - sum(self.extra_step_proportions)), 2)
 
                 # Update decoding policy state
+                temperature = random.choice(possible_temperatures)
+                self.temperature_schedule.append(temperature)
+                remasking_strategy = random.choice(possible_remasking_strategies)
+                self.remasking_strategy_schedule.append(remasking_strategy)
+
+
                 self.block_end_step_id = self.step_id + block_length
                 self.block_schedule.append(block_length)
                 self.extra_step_proportions.append(extra_step_proportion)
