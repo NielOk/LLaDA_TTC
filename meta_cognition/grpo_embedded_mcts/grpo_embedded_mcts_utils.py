@@ -10,6 +10,16 @@ def evaluate_policy(model, prompt, policy_state):
     return reward
 
 def expand_node(node, branching_factor, steps, **sampling_kwargs):
+    '''
+    **sampling_kwargs format example: 
+    sampling_kwargs = {
+        "possible_temperatures": [0.7, 1.0, 1.3],
+        "possible_remasking_strategies": ["low_confidence", "random"],
+        "steps": 128,
+        "gen_length": 128,
+        "max_num_blocks": 4
+    }
+    '''
     new_nodes = []
     for _ in range(branching_factor):
         child_state = copy.deepcopy(node.state)
@@ -31,6 +41,7 @@ def grpo_update(children, model, prompt):
     mean_r = sum(rewards) / len(rewards)
     for child, r in zip(children, rewards):
         child.value_sum += (r - mean_r)
+
 
 def search(model, prompt, steps=128, iters=30, branching_factor=2, **sampling_kwargs):
     root = MCTSNode(state=DecodingPolicyState())
