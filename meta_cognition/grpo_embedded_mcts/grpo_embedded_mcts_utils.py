@@ -29,6 +29,20 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
         new_nodes.append(child)
     return new_nodes
 
+def rollout_policy(policy_state, steps, **sampling_kwargs):
+    """
+    Complete the decoding policy from its current step_id to `steps`
+    by randomly sampling within the structured per-block rules.
+    
+    Returns a fully-sampled decoding policy.
+    """
+    state = copy.deepcopy(policy_state)
+    
+    while state.step_id < steps:
+        state.sample_partial_decoding_policy(**sampling_kwargs)
+    
+    return state
+
 def grpo_update(children, model, prompt):
     rewards = []
     for child in children:
