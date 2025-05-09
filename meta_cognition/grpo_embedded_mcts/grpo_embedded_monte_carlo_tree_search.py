@@ -51,18 +51,27 @@ def main():
         input_ids = torch.tensor(input_ids).to(device).unsqueeze(0)
         input_ids_list.append(input_ids)
 
+    steps = 256
+    iters = 50
+    branching_factor = 2 # number of children to sample at each node
+    top_k = 3
+    possible_temperatures = [0.7, 1.0]
+    possible_remasking_strategies = ["low_confidence", "random"]
+    gen_length = 128
+    max_num_blocks = 4 # Depth of the tree
+
     top_policies = search_shared(
         model=model,
         prompts=input_ids_list,
         labels=train_labels,
-        steps=128,
-        iters=50,
-        branching_factor=2,
-        top_k=3,
-        possible_temperatures=[0.7, 1.0],
-        possible_remasking_strategies=["low_confidence", "random"],
-        gen_length=128,
-        max_num_blocks=4
+        steps=steps,
+        iters=iters,
+        branching_factor=branching_factor,
+        top_k=top_k,
+        possible_temperatures=possible_temperatures,
+        possible_remasking_strategies=possible_remasking_strategies,
+        gen_length=gen_length,
+        max_num_blocks=max_num_blocks
         )
     
     # Save the top policies
@@ -73,6 +82,14 @@ def main():
         "num_questions_sampled": num_folio_questions_to_sample,
         "folio_dataset_examples": train_formatted_questions,
         "folio_dataset_labels": train_labels,
+        "steps": steps,
+        "iters": iters,
+        "branching_factor": branching_factor,
+        "top_k": top_k,
+        "possible_temperatures": possible_temperatures,
+        "possible_remasking_strategies": possible_remasking_strategies,
+        "gen_length": gen_length,
+        "max_num_blocks": max_num_blocks
     }
     for i, policy in enumerate(top_policies):
         top_policies_dict[f"policy_{i}"] = {
