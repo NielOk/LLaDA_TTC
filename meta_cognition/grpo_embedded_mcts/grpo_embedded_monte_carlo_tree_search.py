@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import argparse
 import random
 from datasets import load_dataset
+import json
 
 from transformers import AutoTokenizer, AutoModel
 from decoding_policy_state import DecodingPolicyState
@@ -33,13 +34,6 @@ def load_folio_train_dataset(num_questions_to_sample=1000):
 
 def main():
     device = 'cuda'
-
-    cur_decoding_policy_state = None
-    possible_temperatures = [i / 10 for i in range(0, 11)]
-    possible_remasking_strategies= ["low_confidence", "random"]
-    steps = 256
-    gen_length = 128
-    max_num_blocks = 4
     
     num_folio_questions_to_sample = 5 # Trying smaller set for testing
 
@@ -70,6 +64,23 @@ def main():
         gen_length=128,
         max_num_blocks=4
         )
+    
+    # Save the top policies
+    top_policies_dict = {}
+    top_policies_dict['metadata'] = {
+        "description": "Top policies from GRPO-embedded MCTS over decoding policies",
+        "model_name": model_name,
+        "num_questions_sampled": num_folio_questions_to_sample,
+        "folio_dataset_examples": train_formatted_questions,
+        "folio_dataset_labels": train_labels,
+    }
+    for i, policy in enumerate(top_policies):
+        top_policies_dict[f"policy_{i}"] = {
+            "temperature_schedule": policy.temperature_schedule,
+            "remasking_strategy_schedule": policy.remasking_strategy_schedule,
+            "block_schedule": policy.block_schedule,
+            "extra_step_proportions": policy.extra_step_proportions
+        }
 
 
 if __name__ == '__main__':
