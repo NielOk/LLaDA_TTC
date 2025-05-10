@@ -11,6 +11,7 @@ class MCTSNode:
         self.children = []
         self.value_sum = 0.0
         self.visits = 0
+        self.completed_state = None  # Store full rollout result
 
     def is_fully_expanded(self, branching_factor):
         return len(self.children) >= branching_factor
@@ -25,3 +26,6 @@ class MCTSNode:
 
     def best_child(self):
         return max(self.children, key=lambda child: child.ucb_score())
+
+    def __repr__(self):
+        return f"MCTSNode(steps={self.state.step_id}, value={self.value_sum:.2f}, visits={self.visits})"
