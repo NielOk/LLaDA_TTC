@@ -60,6 +60,14 @@ def main():
     gen_length = 128
     max_num_blocks = 4 # Depth of the tree
 
+    sampling_kwargs = {
+        "possible_temperatures": possible_temperatures,
+        "possible_remasking_strategies": possible_remasking_strategies,
+        "steps": steps,
+        "gen_length": gen_length,
+        "max_num_blocks": max_num_blocks,
+    }
+
     top_policies = search_shared(
         model=model,
         prompts=input_ids_list,
@@ -68,10 +76,7 @@ def main():
         iters=iters,
         branching_factor=branching_factor,
         top_k=top_k,
-        possible_temperatures=possible_temperatures,
-        possible_remasking_strategies=possible_remasking_strategies,
-        gen_length=gen_length,
-        max_num_blocks=max_num_blocks
+        **sampling_kwargs,
         )
     
     # Save the top policies
