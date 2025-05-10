@@ -92,7 +92,7 @@ def grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs):
             for j in range(n_prompts)
         )
 
-        # Optional: normalize by number of prompts
+        # Normalize by number of prompts
         total_advantage /= n_prompts
 
         # Step 4: Propagate advantage up the tree
