@@ -44,6 +44,7 @@ def extract_final_answer(output):
             return line
     return "None"
 
+
 def compute_reward(output, reference_label):
     prediction = extract_final_answer(output)
     return 1.0 if prediction.strip().lower() == reference_label.lower() else 0.0
