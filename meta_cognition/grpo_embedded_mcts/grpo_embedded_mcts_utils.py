@@ -50,15 +50,24 @@ def compute_reward(output, reference_label):
 
 
 # === GRPO Update with Reward Propagation ===
-def grpo_update_shared(children, model, prompts, labels, **sampling_kwargs):
-    child_rewards = []
+def grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs):
+    """
+    For each child decoding policy, evaluate it on each prompt.
+    Then normalize the reward per prompt and compute the total advantage.
+    Apply GRPO by propagating that advantage up the tree.
+    """
+    n_prompts = len(prompts)
+    n_children = len(children)
 
-    for child in children:
+    # Matrix: child_rewards[i][j] = reward of child i on prompt j
+    child_rewards = [[0.0 for _ in range(n_prompts)] for _ in range(n_children)]
+
+    # Step 1: Complete all decoding policies
+    for i, child in enumerate(children):
         completed_state = rollout_policy(child.state, **sampling_kwargs)
-        child.completed_state = completed_state
+        child.completed_state = completed_state  # store it for reuse
 
-        total_reward = 0.0
-        for prompt, reference_label in zip(prompts, labels):
+        for j, (prompt, reference_label) in enumerate(zip(prompts, labels)):
             output = generate_with_decoding_policy(
                 model,
                 prompt,
@@ -67,18 +76,29 @@ def grpo_update_shared(children, model, prompts, labels, **sampling_kwargs):
                 gen_length=sampling_kwargs["gen_length"]
             )
             reward = compute_reward(output, reference_label)
-            total_reward += reward
+            child_rewards[i][j] = reward
 
-        avg_reward = total_reward / len(prompts)
-        child_rewards.append(avg_reward)
+    # Step 2: Per-prompt mean reward
+    prompt_means = []
+    for j in range(n_prompts):
+        mean_rj = sum(child_rewards[i][j] for i in range(n_children)) / n_children
+        prompt_means.append(mean_rj)
 
-    mean_r = sum(child_rewards) / len(child_rewards)
+    # Step 3: Compute total advantage per child
+    for i, child in enumerate(children):
+        # Sum of prompt-wise advantages
+        total_advantage = sum(
+            child_rewards[i][j] - prompt_means[j]
+            for j in range(n_prompts)
+        )
 
-    for child, r in zip(children, child_rewards):
-        advantage = r - mean_r
+        # Optional: normalize by number of prompts
+        total_advantage /= n_prompts
+
+        # Step 4: Propagate advantage up the tree
         node = child
         while node is not None:
-            node.value_sum += advantage
+            node.value_sum += total_advantage
             node.visits += 1
             node = node.parent
 
@@ -94,7 +114,7 @@ def search_shared(model, prompts, labels, steps=128, iters=30, branching_factor=
 
         if not node.is_terminal(steps):
             children = expand_node(node, branching_factor, steps, **sampling_kwargs)
-            grpo_update_shared(children, model, prompts, labels, **sampling_kwargs)
+            grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs)
 
     # Collect all leaf nodes
     all_leaves = []
