@@ -10,7 +10,7 @@ import sys
 
 DECODING_POLICY_BASED_GENERATION_DIR = os.path.dirname(os.path.abspath(__file__))
 META_COGNITION_DIR = os.path.dirname(DECODING_POLICY_BASED_GENERATION_DIR)
-MCTS_DIR = os.path.join(META_COGNITION_DIR, "MCTS")
+MCTS_DIR = os.path.join(META_COGNITION_DIR, "grpo_embedded_mcts")
 
 if MCTS_DIR not in os.sys.path:
     os.sys.path.append(MCTS_DIR)
