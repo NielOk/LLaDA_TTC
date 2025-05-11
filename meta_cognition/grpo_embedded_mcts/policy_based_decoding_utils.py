@@ -50,13 +50,14 @@ def generate_with_decoding_policy(model, prompt, decoding_policy, steps=128, gen
         cfg_scale: Classifier-free guidance scale.
         mask_id: Token ID for [MASK].
     '''
+    
     x = torch.full((1, prompt.shape[1] + gen_length), mask_id, dtype=torch.long).to(model.device)
     x[:, :prompt.shape[1]] = prompt.clone()
     prompt_index = (x != mask_id)
 
     assert sum(decoding_policy.block_schedule) == gen_length, "Block schedule must sum to total gen_length."
-    assert len(decoding_policy.temperature_schedule) == steps
-    assert len(decoding_policy.remasking_strategy_schedule) == steps
+    assert len(decoding_policy.temperature_schedule) == len(decoding_policy.block_schedule)
+    assert len(decoding_policy.remasking_strategy_schedule) == len(decoding_policy.block_schedule)
     assert len(decoding_policy.extra_step_proportions) == len(decoding_policy.block_schedule)
 
     # Convert proportions to actual steps
@@ -79,10 +80,10 @@ def generate_with_decoding_policy(model, prompt, decoding_policy, steps=128, gen
         block_mask_index = (x[:, block_start:block_end] == mask_id)
         num_transfer_tokens = get_num_transfer_tokens(block_mask_index, block_steps)
 
+        temperature = decoding_policy.temperature_schedule[block_id]
+        remasking = decoding_policy.remasking_strategy_schedule[block_id]
+
         for i in range(block_steps):
-            step_idx = step_ptr + i
-            temperature = decoding_policy.temperature_schedule[step_idx]
-            remasking = decoding_policy.remasking_strategy_schedule[step_idx]
 
             mask_index = (x == mask_id)
 
