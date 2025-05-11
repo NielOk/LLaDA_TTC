@@ -1,9 +1,17 @@
 import copy
 import random
+import openai
+from dotenv import load_dotenv
+import os
 
 from decoding_policy_state import DecodingPolicyState
 from policy_based_decoding_utils import *
 from mcts_node import MCTSNode
+
+# Load openai client
+load_dotenv()
+openai_api_key = os.getenv("niel_openai_token")
+client = openai.OpenAI(api_key=openai_api_key)
 
 # === Expansion ===
 def expand_node(node, branching_factor, steps, **sampling_kwargs):
