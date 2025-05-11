@@ -7,12 +7,19 @@ import argparse
 import random
 from datasets import load_dataset
 import json
+from huggingface_hub import login
+from dotenv import load_dotenv
 
 from transformers import AutoTokenizer, AutoModel
 from decoding_policy_state import DecodingPolicyState
 from policy_based_decoding_utils import *
 from mcts_node import MCTSNode
 from grpo_embedded_mcts_utils import *
+
+load_dotenv()
+# Load huggingface token
+hugging_face_token = os.getenv("niel_hugging_face_token")
+login(token=hugging_face_token)
 
 def load_folio_train_dataset(num_questions_to_sample=1000):
     ds = load_dataset("yale-nlp/FOLIO", split="train")
@@ -37,10 +44,14 @@ def main():
     
     num_folio_questions_to_sample = 5 # Trying smaller set for testing
 
+    print("started model loading...")
+
     model_name = 'GSAI-ML/LLaDA-8B-Instruct' # Use instruct model by default
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     model = AutoModel.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.bfloat16).to(device).eval()
+
+    print("Model loaded successfully.")
 
     train_formatted_questions, train_labels = load_folio_train_dataset(num_questions_to_sample=num_folio_questions_to_sample)
     input_ids_list = []
@@ -52,7 +63,7 @@ def main():
         input_ids_list.append(input_ids)
 
     steps = 256
-    iters = 50
+    iters = 1
     branching_factor = 2 # number of children to sample at each node
     top_k = 3
     possible_temperatures = [0.7, 1.0]
@@ -63,13 +74,13 @@ def main():
     sampling_kwargs = {
         "possible_temperatures": possible_temperatures,
         "possible_remasking_strategies": possible_remasking_strategies,
-        "steps": steps,
         "gen_length": gen_length,
         "max_num_blocks": max_num_blocks,
     }
 
     top_policies = search_shared(
         model=model,
+        tokenizer=tokenizer,
         prompts=input_ids_list,
         labels=train_labels,
         steps=steps,

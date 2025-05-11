@@ -20,7 +20,6 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
     {
         "possible_temperatures": [0.7, 1.0],
         "possible_remasking_strategies": ["low_confidence", "random"],
-        "steps": 256,
         "gen_length": 128,
         "max_num_blocks": 4
     }
@@ -59,12 +58,13 @@ def compute_reward(output, reference_label):
 
 
 # === GRPO Update with Reward Propagation ===
-def grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs):
+def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs):
     """
     For each child decoding policy, evaluate it on each prompt.
     Then normalize the reward per prompt and compute the total advantage.
     Apply GRPO by propagating that advantage up the tree.
     """
+    print("=== GRPO Update ===")
     n_prompts = len(prompts)
     n_children = len(children)
 
@@ -73,18 +73,21 @@ def grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs):
 
     # Step 1: Complete all decoding policies
     for i, child in enumerate(children):
-        completed_state = rollout_policy(child.state, **sampling_kwargs)
+        completed_state = rollout_policy(child.state, steps=steps, **sampling_kwargs)
         child.completed_state = completed_state  # store it for reuse
 
         for j, (prompt, reference_label) in enumerate(zip(prompts, labels)):
+            print(f"Child {i}, Prompt {j}: Evaluating...")
             output = generate_with_decoding_policy(
                 model,
                 prompt,
                 completed_state,
-                steps=sampling_kwargs["steps"],
-                gen_length=sampling_kwargs["gen_length"]
+                steps=steps,
+                gen_length=sampling_kwargs['gen_length']
             )
-            reward = compute_reward(output, reference_label)
+            decoded_output = tokenizer.batch_decode(output[:, prompt.shape[1]:], skip_special_tokens=True)[0]
+            reward = compute_reward(decoded_output, reference_label)
+            print(f"Child {i}, Prompt {j}: Reward = {reward}")
             child_rewards[i][j] = reward
 
     # Step 2: Per-prompt mean reward
@@ -113,7 +116,7 @@ def grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs):
 
 
 # === Main Search ===
-def search_shared(model, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, **sampling_kwargs):
+def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, **sampling_kwargs):
     root = MCTSNode(state=DecodingPolicyState())
 
     for _ in range(iters):
@@ -123,7 +126,8 @@ def search_shared(model, prompts, labels, steps=128, iters=30, branching_factor=
 
         if not node.is_terminal(steps):
             children = expand_node(node, branching_factor, steps, **sampling_kwargs)
-            grpo_update_per_prompt(children, model, prompts, labels, **sampling_kwargs)
+            print(f"[LOG] Expanded {len(children)} children at node: {node}")
+            grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs)
 
     # Collect all leaf nodes
     all_leaves = []
