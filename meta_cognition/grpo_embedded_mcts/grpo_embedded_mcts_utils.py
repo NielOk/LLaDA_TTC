@@ -24,6 +24,7 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
         "max_num_blocks": 4
     }
     '''
+    print("=== EXPANDING NODE ===")
 
     new_nodes = []
     for _ in range(branching_factor):
@@ -37,9 +38,11 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
 
 # === Rollout ===
 def rollout_policy(policy_state, steps, **sampling_kwargs):
+    print("=== ROLLING OUT POLICY ===")
     state = copy.deepcopy(policy_state)
     while state.step_id < steps:
-        state.sample_partial_decoding_policy(**sampling_kwargs)
+        state.sample_partial_decoding_policy(**sampling_kwargs, steps=steps)
+    print(f"Finished rollout")
     return state
 
 

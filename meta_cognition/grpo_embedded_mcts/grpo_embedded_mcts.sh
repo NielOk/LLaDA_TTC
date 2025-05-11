@@ -54,8 +54,7 @@ read -p "Would you like to run the GRPO-embedded MCTS script on the remote insta
 if [[ $run_search == "y" ]]; then
 
     echo "Running GRPO-embedded MCTS script on remote instance for model variant: Instruct..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 ~/$GRPO_EMBEDDED_MCTS_SCRIPT > instruct_grpo_embedded_mcts_output.log 2>&1 &" &
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT > instruct_grpo_embedded_mcts_output.log 2>&1 &" &
 else
     echo "Skipping GRPO-embedded MCTS script execution."
 fi
-

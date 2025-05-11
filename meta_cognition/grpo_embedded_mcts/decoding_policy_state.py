@@ -24,7 +24,7 @@ class DecodingPolicyState():
         """
 
         # Sample a new partial policy state
-        if self.step_id >= steps:
+        if self.step_id > steps:
             return
         
         # Sample a block length and extra step proportion if eligible
