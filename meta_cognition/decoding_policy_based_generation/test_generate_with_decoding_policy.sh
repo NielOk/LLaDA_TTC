@@ -18,7 +18,6 @@ read -p "Enter the SSH host/instance address (e.g. 129.146.33.218): " remote_ssh
 # Copy inference scripts to the remote instance
 
 cd ..
-pwd
 GENERATE_SCRIPT_NAME="test_generate_with_decoding_policy.py"
 DECODING_POLICY_NAME="decoding_policy_state.py"
 UTILS_NAME="policy_based_decoding_utils.py"
@@ -28,8 +27,8 @@ read -p "Would you like to copy the inference script to the remote instance? (y/
 if [[ $copy_script == "y" ]]; then
     echo "Copying inference script to remote instance..."
     scp -i "$private_ssh_key" "./decoding_policy_based_generation/$GENERATE_SCRIPT_NAME" "$remote_ssh_user@$remote_ssh_host:~/$GENERATE_SCRIPT_NAME"
-    scp -i "$private_ssh_key" "./MCTS/$DECODING_POLICY_NAME" "$remote_ssh_user@$remote_ssh_host:~/$DECODING_POLICY_NAME"
-    scp -i "$private_ssh_key" "./MCTS/$UTILS_NAME" "$remote_ssh_user@$remote_ssh_host:~/$UTILS_NAME"
+    scp -i "$private_ssh_key" "./grpo_embedded_mcts/$DECODING_POLICY_NAME" "$remote_ssh_user@$remote_ssh_host:~/$DECODING_POLICY_NAME"
+    scp -i "$private_ssh_key" "./grpo_embedded_mcts/$UTILS_NAME" "$remote_ssh_user@$remote_ssh_host:~/$UTILS_NAME"
 else
     echo "Skipping script copy."
 fi

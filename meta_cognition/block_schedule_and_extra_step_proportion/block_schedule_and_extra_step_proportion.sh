@@ -1,4 +1,4 @@
-### This is a script that runs the generate.py script on a running Lambda Cloud instance ###
+### This is a script that runs the block_schedule_and_extra_step_proportion.py script on a running Lambda Cloud instance ###
 
 #!/bin/bash
 
