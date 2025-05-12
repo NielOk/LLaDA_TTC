@@ -89,6 +89,7 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, *
                 gen_length=sampling_kwargs['gen_length']
             )
             decoded_output = tokenizer.batch_decode(output[:, prompt.shape[1]:], skip_special_tokens=True)[0]
+            print(f"Child {i}, Prompt {j}: Decoded output: {decoded_output}")
             reward = compute_reward(decoded_output, reference_label)
             print(f"Child {i}, Prompt {j}: Reward = {reward}")
             child_rewards[i][j] = reward
