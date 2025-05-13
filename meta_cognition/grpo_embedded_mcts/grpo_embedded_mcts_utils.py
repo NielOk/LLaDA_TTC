@@ -149,4 +149,4 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
         reverse=True
     )[:top_k]
 
-    return [leaf.completed_state for leaf in top_leaves]  # return best decoding policies
+    return root, [leaf.completed_state for leaf in top_leaves]  # return best decoding policies
