@@ -168,6 +168,10 @@ def train_additional_iters(num_additional_iters, device, tokenizer, model, metad
         json.dump(root.to_dict(), f, indent=2)
     print(f"Saved updated metadata to {metadata_filename}")
 
+def test_time_grpo_embedded_mcts(device, tokenizer, model, metadata_filename, tree_filename):
+    # Load the tree and metadata, then on the test set, perform GRPO-embedded MCTS, collect top policies, and score
+    pass
+
 def main():
     device = 'cuda'
 
