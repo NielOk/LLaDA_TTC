@@ -80,7 +80,7 @@ def train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_fa
     # Save the top policies and metadata
     top_policies_dict = {}
     top_policies_dict['metadata'] = {
-        "description": "Top policies from GRPO-embedded MCTS over decoding policies",
+        "description": "Top policies and metadata from GRPO-embedded MCTS over decoding policies pretraining",
         "model_name": model_name,
         "num_questions_sampled_for_training": num_folio_questions_to_sample_train,
         "num_questions_sampled_for_testing": num_folio_questions_to_sample_test,
@@ -99,7 +99,7 @@ def train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_fa
         "max_num_blocks": sampling_kwargs["max_num_blocks"]
     }
     for i, policy in enumerate(top_policies):
-        top_policies_dict[f"policy_{i}"] = {
+        top_policies_dict[f"pretrained_policy_{i}"] = {
             "temperature_schedule": policy.temperature_schedule,
             "remasking_strategy_schedule": policy.remasking_strategy_schedule,
             "block_schedule": policy.block_schedule,
@@ -126,7 +126,6 @@ def train_additional_iters(num_additional_iters, device, tokenizer, model, metad
         root = MCTSNode.from_dict(json.load(f))
 
     steps = metadata['metadata']['steps']
-    iters = metadata['metadata']['iters']
     branching_factor = metadata['metadata']['branching_factor']
     top_k = metadata['metadata']['top_k']
 
@@ -168,9 +167,75 @@ def train_additional_iters(num_additional_iters, device, tokenizer, model, metad
         json.dump(root.to_dict(), f, indent=2)
     print(f"Saved updated metadata to {metadata_filename}")
 
-def test_time_grpo_embedded_mcts(device, tokenizer, model, metadata_filename, tree_filename):
-    # Load the tree and metadata, then on the test set, perform GRPO-embedded MCTS, collect top policies, and score
+def evaluate_policy(model, tokenizer, prompts, labels, policy, steps=128, **sampling_kwargs):
+    '''
+    Evaluate a single policy on the given prompts and labels and score it.
+    '''
     pass
+
+def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_trained_metadata_filename, pre_trained_tree_filename, test_time_metadata_filename, test_time_tree_filename):
+    '''
+    Load the tree and metadata, then on the test set, perform GRPO-embedded MCTS, collect top policies, and score
+    '''
+    with open(pre_trained_metadata_filename) as f:
+        metadata = json.load(f)
+    with open(pre_trained_tree_filename) as f:
+        root = MCTSNode.from_dict(json.load(f))
+
+    steps = metadata['metadata']['steps']
+    branching_factor = metadata['metadata']['branching_factor']
+    top_k = metadata['metadata']['top_k']
+
+    sampling_kwargs = {
+        "possible_temperatures": metadata['metadata']['possible_temperatures'],
+        "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],
+        "gen_length": metadata['metadata']['gen_length'],
+        "max_num_blocks": metadata['metadata']['max_num_blocks']
+    }
+
+    test_formatted_questions = metadata['metadata']['folio_test_dataset_prompts']
+    test_labels = metadata['metadata']['folio_test_dataset_labels']
+
+    test_input_ids_list = convert_prompts_to_input_ids(test_formatted_questions, tokenizer, device)
+
+    # Perform test-time GRPO-embedded MCTS on the pre-trained tree
+    resume_node = root
+    test_time_root, test_time_top_policies = search_shared(
+        model=model, 
+        tokenizer=tokenizer,
+        prompts=test_input_ids_list,
+        labels=test_labels,
+        steps=steps,
+        iters=test_time_iters,
+        branching_factor=branching_factor,
+        top_k=top_k,
+        resume_node=resume_node,
+        **sampling_kwargs,
+    )
+
+    # Save the top policies and metadata
+    metadata['metadata']['description'] = 'Top policies and metadata from GRPO-embedded MCTS over decoding policies at test time'
+    metadata['metadata']['test_time_iters'] = test_time_iters
+
+    for i, policy in enumerate(test_time_top_policies):
+        metadata[f"test_time_policy_{i}"] = {
+            "temperature_schedule": policy.temperature_schedule,
+            "remasking_strategy_schedule": policy.remasking_strategy_schedule,
+            "block_schedule": policy.block_schedule,
+            "extra_step_proportions": policy.extra_step_proportions
+        }
+
+    # Save the metadata
+    with open(test_time_metadata_filename, "w") as f:
+        json.dump(metadata, f, indent=2)
+    print(f"Saved metadata to {test_time_metadata_filename}")
+    
+    # Save the tree
+    with open(test_time_tree_filename, "w") as f:
+        json.dump(test_time_root.to_dict(), f, indent=2)
+    print(f"Saved tree to {test_time_tree_filename}")
+
+
 
 def main():
     device = 'cuda'
