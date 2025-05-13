@@ -120,8 +120,11 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, *
 
 
 # === Main Search ===
-def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, **sampling_kwargs):
-    root = MCTSNode(state=DecodingPolicyState())
+def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, resume_node=None, **sampling_kwargs):
+    if resume_node is None:
+        root = MCTSNode(state=DecodingPolicyState())
+    else:
+        root=resume_node
 
     for _ in range(iters):
         node = root

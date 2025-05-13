@@ -106,9 +106,67 @@ def train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_fa
             "extra_step_proportions": policy.extra_step_proportions
         }
 
+    # Save the metadata
+    with open(metadata_filename, "w") as f:
+        json.dump(top_policies_dict, f, indent=2)
+    print(f"Saved metadata to {metadata_filename}")
+
     # Save the tree
     with open("mcts_tree_snapshot.json", "w") as f:
         json.dump(root.to_dict(), f, indent=2)
+    print(f"Saved tree to {tree_filename}")
+
+def train_additional_iters(num_additional_iters, device, tokenizer, model, metadata_filename, tree_filename):
+    """
+    Load the tree and metadata, and perform additional iterations of GRPO-embedded MCTS.
+    """
+    with open(metadata_filename) as f:
+        metadata = json.load(f)
+    with open(tree_filename) as f:
+        root = MCTSNode.from_dict(json.load(f))
+
+    steps = metadata['metadata']['steps']
+    iters = metadata['metadata']['iters']
+    branching_factor = metadata['metadata']['branching_factor']
+    top_k = metadata['metadata']['top_k']
+
+    sampling_kwargs = {
+        "possible_temperatures": metadata['metadata']['possible_temperatures'],
+        "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],
+        "gen_length": metadata['metadata']['gen_length'],
+        "max_num_blocks": metadata['metadata']['max_num_blocks']
+    }
+
+    train_formatted_questions = metadata['metadata']['folio_train_dataset_prompts']
+    train_labels = metadata['metadata']['folio_train_dataset_labels']
+
+    train_input_ids_list = convert_prompts_to_input_ids(train_formatted_questions, tokenizer, device)
+
+    # Perform additional iterations of GRPO-embedded MCTS
+    resume_node = root
+    root, top_policies = search_shared(
+        model=model, 
+        tokenizer=tokenizer,
+        prompts=train_input_ids_list,
+        labels=train_labels,
+        steps=steps,
+        iters=num_additional_iters,
+        branching_factor=branching_factor,
+        top_k=top_k,
+        resume_node=resume_node,
+        **sampling_kwargs,
+    )
+
+    # Save the top policies and metadata, only update is the number of iterations
+    metadata['metadata']['iters'] += num_additional_iters
+    with open(metadata_filename, "w") as f:
+        json.dump(metadata, f, indent=2)
+    print(f"Saved metadata to {metadata_filename}")
+    
+    # Save the updated tree
+    with open(tree_filename, "w") as f:
+        json.dump(root.to_dict(), f, indent=2)
+    print(f"Saved updated metadata to {metadata_filename}")
 
 def main():
     device = 'cuda'
