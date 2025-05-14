@@ -167,11 +167,20 @@ def train_additional_iters(num_additional_iters, device, tokenizer, model, metad
         json.dump(root.to_dict(), f, indent=2)
     print(f"Saved updated metadata to {metadata_filename}")
 
-def evaluate_policy(model, tokenizer, prompts, labels, policy, steps=128, **sampling_kwargs):
+def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_kwargs):
     '''
-    Evaluate a single policy on the given prompts and labels and score it.
+    Evaluate a single policy on a single prompt and label and score it.
     '''
-    pass
+    output = generate_with_decoding_policy(model, prompt, policy, steps=steps, gen_length=sampling_kwargs['gen_length'])
+    decoded_output = tokenizer.batch_decode(output[:, prompt.shape[1]:], skip_special_tokens=True)[0]
+
+    print(f"Prompt: {prompt}")
+    print(f"Decoded output: {decoded_output}")
+    print(f"Label: {label}")
+    reward = compute_reward(decoded_output, label)
+    print(f"Reward: {reward}")
+
+    return decoded_output, reward
 
 def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_trained_metadata_filename, pre_trained_tree_filename, test_time_metadata_filename, test_time_tree_filename):
     '''
@@ -213,7 +222,7 @@ def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_
         **sampling_kwargs,
     )
 
-    # Save the top policies and metadata
+    # Save and evaluate the top policies and metadata 
     metadata['metadata']['description'] = 'Top policies and metadata from GRPO-embedded MCTS over decoding policies at test time'
     metadata['metadata']['test_time_iters'] = test_time_iters
 
@@ -225,7 +234,17 @@ def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_
             "extra_step_proportions": policy.extra_step_proportions
         }
 
-    # Save the metadata
+        # Evaluate the policy on the test set
+        for text_prompt, tokenized_prompt, label in zip(test_formatted_questions, test_input_ids_list, test_labels):
+            decoded_output, reward = evaluate_policy(model, tokenizer, tokenized_prompt, label, policy, steps, **sampling_kwargs)
+            metadata[f'test_time_policy_{i}']['evals'] = {
+                "prompt": text_prompt, 
+                "label": label,
+                "decoded_output": decoded_output, 
+                "reward": reward
+            }
+
+    # Save the evaluated metadata
     with open(test_time_metadata_filename, "w") as f:
         json.dump(metadata, f, indent=2)
     print(f"Saved metadata to {test_time_metadata_filename}")
@@ -234,8 +253,6 @@ def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_
     with open(test_time_tree_filename, "w") as f:
         json.dump(test_time_root.to_dict(), f, indent=2)
     print(f"Saved tree to {test_time_tree_filename}")
-
-
 
 def main():
     device = 'cuda'
