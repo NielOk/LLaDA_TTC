@@ -287,11 +287,11 @@ def main():
     }
 
     # Filenames
-    pre_training_metadata_filename = "pre_training_mcts_metadata.json"
-    pre_training_tree_filename = "pre_training_mcts_tree_snapshot.json"
+    pre_training_metadata_filename = "pre_training_grpo_embedded_mcts_metadata.json"
+    pre_training_tree_filename = "pre_training_grpo_embedded_mcts_tree_snapshot.json"
 
-    test_time_metadata_filename = "test_time_mcts_metadata.json"
-    test_time_tree_filename = "test_time_mcts_tree_snapshot.json"
+    test_time_metadata_filename = "test_time_grpo_embedded_mcts_metadata.json"
+    test_time_tree_filename = "test_time_grpo_embedded_mcts_tree_snapshot.json"
 
     if args.mode == 'pretrain_from_scratch': # Train the tree from scratch
         print("Training tree from scratch...")
