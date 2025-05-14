@@ -255,6 +255,10 @@ def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_
     print(f"Saved tree to {test_time_tree_filename}")
 
 def main():
+    parser = argparse.ArgumentParser(description="GRPO-embedded MCTS over Decoding Policies")
+    parser.add_argument('--mode', choices=['pretrain_from_scratch', 'pretrain_from_snapshot', 'test_time'], default='pretrain_from_scratch')
+    args = parser.parse_args()
+
     device = 'cuda'
 
     print("started model loading...")
@@ -282,14 +286,24 @@ def main():
         "max_num_blocks": max_num_blocks,
     }
 
-    # Train the tree from scratch
-    metadata_filename = "mcts_metadata.json"
-    tree_filename = "mcts_tree_snapshot.json"
-    train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_factor, top_k, model_name, metadata_filename, tree_filename, **sampling_kwargs)
+    # Filenames
+    pre_training_metadata_filename = "pre_training_mcts_metadata.json"
+    pre_training_tree_filename = "pre_training_mcts_tree_snapshot.json"
 
-    # Load the tree
-    with open(tree_filename) as f:
-        root = MCTSNode.from_dict(json.load(f))
+    test_time_metadata_filename = "test_time_mcts_metadata.json"
+    test_time_tree_filename = "test_time_mcts_tree_snapshot.json"
+
+    if args.mode == 'pretrain_from_scratch': # Train the tree from scratch
+        print("Training tree from scratch...")
+        train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_factor, top_k, model_name, pre_training_metadata_filename, pre_training_tree_filename, **sampling_kwargs)
+    elif args.mode == 'pretrain_from_snapshot': # Train the tree from a snapshot
+        print("Training additional iterations on the tree from a snapshot...")
+        num_additional_iters = 1
+        train_additional_iters(num_additional_iters, device, tokenizer, model, pre_training_metadata_filename, pre_training_tree_filename)
+    elif args.mode == 'test_time': # Test time GRPO-embedded MCTS
+        print("Performing test time GRPO-embedded MCTS...")
+        test_time_iters = 1
+        test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_training_metadata_filename, pre_training_tree_filename, test_time_metadata_filename, test_time_tree_filename)
 
 if __name__ == '__main__':
     main()
