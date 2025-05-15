@@ -1,14 +1,22 @@
 import math
+import torch
 from decoding_policy_state import DecodingPolicyState
 
 class MCTSNode:
-    def __init__(self, state, parent=None):
+    def __init__(self, state, parent=None, branching_factor=None):
         self.state = state
         self.parent = parent
         self.children = []
         self.value_sum = 0.0
         self.visits = 0
         self.completed_state = None  # Store full rollout result
+
+        # GRPO-specific fields
+        self.branching_factor = branching_factor
+        self.child_logits = (
+            torch.nn.Parameter(torch.zeros(branching_factor, dtype=torch.float32))
+            if branching_factor is not None else None
+        )
 
     def is_fully_expanded(self, branching_factor):
         return len(self.children) >= branching_factor
@@ -23,6 +31,16 @@ class MCTSNode:
 
     def best_child(self):
         return max(self.children, key=lambda child: child.ucb_score())
+
+    def softmax_probs(self):
+        if self.child_logits is None:
+            raise ValueError("No logits found. This node must be initialized with a branching_factor.")
+        return torch.nn.functional.softmax(self.child_logits[:len(self.children)], dim=0)
+
+    def log_softmax_probs(self):
+        if self.child_logits is None:
+            raise ValueError("No logits found. This node must be initialized with a branching_factor.")
+        return torch.nn.functional.log_softmax(self.child_logits[:len(self.children)], dim=0)
 
     def __repr__(self):
         return f"MCTSNode(steps={self.state.step_id}, value={self.value_sum:.2f}, visits={self.visits})"
@@ -41,6 +59,7 @@ class MCTSNode:
                 "block_end_step_id": self.state.block_end_step_id
             },
             "children": [child.to_dict() for child in self.children]
+            # We do not serialize logits; those must be reset at runtime.
         }
 
     @staticmethod
@@ -55,6 +74,7 @@ class MCTSNode:
         state.block_id = dp["block_id"]
         state.block_end_step_id = dp["block_end_step_id"]
 
+        # Note: we don’t know branching_factor from serialized data, so set to None
         node = MCTSNode(state=state, parent=parent)
         node.value_sum = data["value_sum"]
         node.visits = data["visits"]
