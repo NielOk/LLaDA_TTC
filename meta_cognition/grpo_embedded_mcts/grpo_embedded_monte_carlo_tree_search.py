@@ -50,12 +50,22 @@ def convert_prompts_to_input_ids(prompts, tokenizer, device):
 
     return input_ids_list
 
-def train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_factor, top_k, model_name, metadata_filename, tree_filename,**sampling_kwargs):
+def train_tree_from_scratch(num_folio_questions_to_sample_train, 
+    num_folio_questions_to_sample_test, 
+    device, 
+    tokenizer, 
+    model, 
+    steps, 
+    iters, 
+    branching_factor, 
+    top_k, 
+    model_name, 
+    metadata_filename, 
+    tree_filename,
+    **sampling_kwargs
+    ):
     """
     Perform GRPO-embedded MCTS over decoding polciies from scratch"""
-
-    num_folio_questions_to_sample_train = 5 # Trying small set for training
-    num_folio_questions_to_sample_test = 1 # Try smaller set for testing
 
     # Get train and test sets
     all_formatted_questions, all_labels = load_folio_train_dataset(num_questions_to_sample=num_folio_questions_to_sample_train + num_folio_questions_to_sample_test)
@@ -182,7 +192,15 @@ def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_k
 
     return decoded_output, reward
 
-def test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_trained_metadata_filename, pre_trained_tree_filename, test_time_metadata_filename, test_time_tree_filename):
+def test_time_grpo_embedded_mcts(test_time_iters, 
+    device, 
+    tokenizer, 
+    model, 
+    pre_trained_metadata_filename, 
+    pre_trained_tree_filename, 
+    test_time_metadata_filename, 
+    test_time_tree_filename
+    ):
     '''
     Load the tree and metadata, then on the test set, perform GRPO-embedded MCTS, collect top policies, and score
     '''
@@ -270,14 +288,19 @@ def main():
 
     print("Model loaded successfully.")
 
+    # Model parameters
     steps = 256
-    iters = 1
+    iters = 3
     branching_factor = 2 # number of children to sample at each node
     top_k = 3
     possible_temperatures = [0.7, 1.0]
     possible_remasking_strategies = ["low_confidence", "random"]
     gen_length = 128
     max_num_blocks = 4 # Depth of the tree
+
+    # Dataset parameters
+    num_folio_questions_to_sample_train = 4 # Trying small set for training
+    num_folio_questions_to_sample_test = 2 # Try smaller set for testing
 
     sampling_kwargs = {
         "possible_temperatures": possible_temperatures,
@@ -295,15 +318,38 @@ def main():
 
     if args.mode == 'pretrain_from_scratch': # Train the tree from scratch
         print("Training tree from scratch...")
-        train_tree_from_scratch(device, tokenizer, model, steps, iters, branching_factor, top_k, model_name, pre_training_metadata_filename, pre_training_tree_filename, **sampling_kwargs)
+        train_tree_from_scratch(
+            num_folio_questions_to_sample_train, 
+            num_folio_questions_to_sample_test, 
+            device, 
+            tokenizer, 
+            model, 
+            steps, 
+            iters, 
+            branching_factor,
+            top_k, 
+            model_name, 
+            pre_training_metadata_filename, 
+            pre_training_tree_filename, 
+            **sampling_kwargs
+        )
     elif args.mode == 'pretrain_from_snapshot': # Train the tree from a snapshot
         print("Training additional iterations on the tree from a snapshot...")
-        num_additional_iters = 1
+        num_additional_iters = 2
         train_additional_iters(num_additional_iters, device, tokenizer, model, pre_training_metadata_filename, pre_training_tree_filename)
     elif args.mode == 'test_time': # Test time GRPO-embedded MCTS
         print("Performing test time GRPO-embedded MCTS...")
         test_time_iters = 1
-        test_time_grpo_embedded_mcts(test_time_iters, device, tokenizer, model, pre_training_metadata_filename, pre_training_tree_filename, test_time_metadata_filename, test_time_tree_filename)
+        test_time_grpo_embedded_mcts(
+            test_time_iters, 
+            device, 
+            tokenizer, 
+            model, 
+            pre_training_metadata_filename, 
+            pre_training_tree_filename, 
+            test_time_metadata_filename, 
+            test_time_tree_filename
+        )
 
 if __name__ == '__main__':
     main()
