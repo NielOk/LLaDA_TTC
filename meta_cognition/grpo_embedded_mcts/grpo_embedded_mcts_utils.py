@@ -56,6 +56,7 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
     while state.step_id < steps:
         state.sample_partial_decoding_policy(**sampling_kwargs, steps=steps)
     print(f"Finished rollout")
+    print(f"Rolled out policy: temperature schedule ({state.temperature_schedule}), remasking strategy schedule ({state.remasking_strategy_schedule}), block schedule ({state.block_schedule}), extra step proportions ({state.extra_step_proportions})")
     return state
 
 
