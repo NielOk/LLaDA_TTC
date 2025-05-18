@@ -17,10 +17,9 @@ client = openai.OpenAI(api_key=openai_api_key)
 
 # === Helper: Recursively collect logits from tree ===
 def collect_all_child_logits(node):
-    """Recursively collects all child_logits from the MCTS tree."""
     logits = []
-    if hasattr(node, 'child_logits') and node.child_logits is not None:
-        logits.append(node.child_logits)
+    if hasattr(node.state, 'child_logits') and node.state.child_logits is not None:
+        logits.extend(node.state.child_logits)
     for child in node.children:
         logits.extend(collect_all_child_logits(child))
     return logits
@@ -45,13 +44,16 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
 
     # Case where node is still partial
     print("=== EXPANDING NODE ===")
-
     print(f"Parent step_id = {node.state.step_id}, block_id = {node.state.block_id}")
 
     new_nodes = []
     for _ in range(branching_factor):
         child_state = copy.deepcopy(node.state)
-        child_state.sample_partial_decoding_policy(**sampling_kwargs, steps=steps)
+        child_state.sample_partial_decoding_policy(
+            steps=steps,
+            gen_length=sampling_kwargs["gen_length"],
+            max_num_blocks=sampling_kwargs["max_num_blocks"]
+        )
         child = MCTSNode(state=child_state, parent=node, branching_factor=branching_factor)
         node.children.append(child)
         new_nodes.append(child)
@@ -63,7 +65,11 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
     print("=== ROLLING OUT POLICY ===")
     state = copy.deepcopy(policy_state)
     while state.step_id < steps:
-        state.sample_partial_decoding_policy(**sampling_kwargs, steps=steps)
+        state.sample_partial_decoding_policy(
+            steps=steps,
+            gen_length=sampling_kwargs["gen_length"],
+            max_num_blocks=sampling_kwargs["max_num_blocks"]
+        )
     print(f"Finished rollout")
     print(f"Rolled out policy: temperature schedule ({state.temperature_schedule}), remasking strategy schedule ({state.remasking_strategy_schedule}), block schedule ({state.block_schedule}), extra step proportions ({state.extra_step_proportions})")
     return state
@@ -130,8 +136,8 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         advantage = sum(child_rewards[i][j] - prompt_means[j] for j in range(n_prompts)) / n_prompts
         advantages.append(advantage)
 
-    # Step 4: GRPO Loss and Logit Update
-    log_probs = parent.log_softmax_probs()
+    # Step 4: GRPO Loss and Logit Update (assume update on temperature logits)
+    log_probs = parent.log_softmax_probs()  # pulled from DecodingPolicyState
     loss = -sum(advantages[i] * log_probs[i] for i in range(n_children))
     optimizer.zero_grad()
     loss.backward()
@@ -149,7 +155,13 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
 # === Main Search ===
 def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, resume_node=None, **sampling_kwargs):
     if resume_node is None:
-        root = MCTSNode(state=DecodingPolicyState(), branching_factor=branching_factor)
+        root = MCTSNode(
+            state=DecodingPolicyState(
+                possible_temperatures=sampling_kwargs["possible_temperatures"],
+                possible_remasking_strategies=sampling_kwargs["possible_remasking_strategies"]
+            ),
+            branching_factor=branching_factor
+        )
     else:
         root = resume_node
 
@@ -169,15 +181,12 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
 
             # After expanding, collect any newly created logits
             new_logits = collect_all_child_logits(root)
-            if len(new_logits) > len(all_logits):
-                # Collect new logits, check if they are already in the optimizer
-                new_logits = collect_all_child_logits(root)
-                new_params = [p for p in new_logits if id(p) not in known_param_ids]
+            new_params = [p for p in new_logits if id(p) not in known_param_ids]
 
-                if new_params:
-                    optimizer.add_param_group({'params': new_params})
-                    known_param_ids.update(id(p) for p in new_params)
-                    all_logits.extend(new_params)
+            if new_params:
+                optimizer.add_param_group({'params': new_params})
+                known_param_ids.update(id(p) for p in new_params)
+                all_logits.extend(new_params)
 
             grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
 
