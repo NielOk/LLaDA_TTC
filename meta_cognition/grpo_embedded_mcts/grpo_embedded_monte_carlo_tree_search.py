@@ -122,7 +122,7 @@ def train_tree_from_scratch(num_folio_questions_to_sample_train,
     print(f"Saved metadata to {metadata_filename}")
 
     # Save the tree
-    with open("mcts_tree_snapshot.json", "w") as f:
+    with open(tree_filename, "w") as f:
         json.dump(root.to_dict(), f, indent=2)
     print(f"Saved tree to {tree_filename}")
 
@@ -175,7 +175,7 @@ def train_additional_iters(num_additional_iters, device, tokenizer, model, metad
     # Save the updated tree
     with open(tree_filename, "w") as f:
         json.dump(root.to_dict(), f, indent=2)
-    print(f"Saved updated metadata to {metadata_filename}")
+    print(f"Saved updated metadata to {tree_filename}")
 
 def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_kwargs):
     '''
@@ -274,8 +274,15 @@ def test_time_grpo_embedded_mcts(test_time_iters,
 
 def main():
     parser = argparse.ArgumentParser(description="GRPO-embedded MCTS over Decoding Policies")
-    parser.add_argument('--mode', choices=['pretrain_from_scratch', 'pretrain_from_snapshot', 'test_time'], default='pretrain_from_scratch')
+    parser.add_argument('--mode', choices=['1', '2', '3'], default='pretrain_from_scratch') # 1: pretrain from scratch, 2: pretrain from snapshot, 3: test time
     args = parser.parse_args()
+
+    if args.mode == '1':
+        args.mode = 'pretrain_from_scratch'
+    elif args.mode == '2':
+        args.mode = 'pretrain_from_snapshot'
+    elif args.mode == '3':
+        args.mode = 'test_time'
 
     device = 'cuda'
 

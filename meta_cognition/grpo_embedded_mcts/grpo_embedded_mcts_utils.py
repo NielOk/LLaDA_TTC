@@ -37,7 +37,16 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
         "max_num_blocks": 4
     }
     '''
+
+    # Case where node is terminal
+    if node.is_terminal(steps):
+        print(f"Skipping expansion: terminal node with step_id {node.state.step_id}")
+        return []
+
+    # Case where node is still partial
     print("=== EXPANDING NODE ===")
+
+    print(f"Parent step_id = {node.state.step_id}, block_id = {node.state.block_id}")
 
     new_nodes = []
     for _ in range(branching_factor):
@@ -65,7 +74,10 @@ def extract_final_answer(output):
     for line in reversed(output.strip().splitlines()):
         line = line.strip()
         if line in {"True", "False", "Uncertain"}:
+            print(f"Extracted Answer: {line}")
             return line
+    
+    print("No valid answer extracted from the output.")
     return "None"
 
 
@@ -144,6 +156,7 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
     # === Initialize persistent optimizer once over all logits ===
     all_logits = collect_all_child_logits(root)
     optimizer = torch.optim.SGD(all_logits, lr=0.1)
+    known_param_ids = {id(p) for p in all_logits}
 
     for _ in range(iters):
         node = root
@@ -157,10 +170,14 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
             # After expanding, collect any newly created logits
             new_logits = collect_all_child_logits(root)
             if len(new_logits) > len(all_logits):
-                # If new nodes with logits were added, extend optimizer param group
-                new_params = [p for p in new_logits if p not in all_logits]
-                optimizer.add_param_group({'params': new_params})
-                all_logits = new_logits
+                # Collect new logits, check if they are already in the optimizer
+                new_logits = collect_all_child_logits(root)
+                new_params = [p for p in new_logits if id(p) not in known_param_ids]
+
+                if new_params:
+                    optimizer.add_param_group({'params': new_params})
+                    known_param_ids.update(id(p) for p in new_params)
+                    all_logits.extend(new_params)
 
             grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
 
