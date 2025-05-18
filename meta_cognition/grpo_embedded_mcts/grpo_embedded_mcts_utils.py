@@ -15,6 +15,35 @@ openai_api_key = os.getenv("niel_openai_token")
 client = openai.OpenAI(api_key=openai_api_key)
 
 
+# Basi
+def clone_decoding_policy_state(source_state):
+    from decoding_policy_state import DecodingPolicyState
+
+    # Create new instance with same options
+    cloned = DecodingPolicyState(
+        possible_temperatures=source_state.possible_temperatures,
+        possible_remasking_strategies=source_state.possible_remasking_strategies
+    )
+
+    # === Copy schedules and counters ===
+    cloned.temperature_schedule = source_state.temperature_schedule.copy()
+    cloned.remasking_strategy_schedule = source_state.remasking_strategy_schedule.copy()
+    cloned.block_schedule = source_state.block_schedule.copy()
+    cloned.extra_step_proportions = source_state.extra_step_proportions.copy()
+    cloned.step_id = source_state.step_id
+    cloned.block_id = source_state.block_id
+    cloned.block_end_step_id = source_state.block_end_step_id
+
+    # === Share logits and logprobs ===
+    cloned.temperature_logits = source_state.temperature_logits
+    cloned.remasking_logits = source_state.remasking_logits
+    cloned.child_logits = source_state.child_logits
+    cloned.temperature_logprob = getattr(source_state, "temperature_logprob", None)
+    cloned.remasking_logprob = getattr(source_state, "remasking_logprob", None)
+
+    return cloned
+
+
 # === Helper: Recursively collect logits from tree ===
 def collect_all_child_logits(node):
     logits = []
@@ -48,7 +77,7 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
 
     new_nodes = []
     for _ in range(branching_factor):
-        child_state = copy.deepcopy(node.state)
+        child_state = clone_decoding_policy_state(node.state)
         child_state.sample_partial_decoding_policy(
             steps=steps,
             gen_length=sampling_kwargs["gen_length"],
@@ -63,7 +92,7 @@ def expand_node(node, branching_factor, steps, **sampling_kwargs):
 # === Rollout ===
 def rollout_policy(policy_state, steps, **sampling_kwargs):
     print("=== ROLLING OUT POLICY ===")
-    state = copy.deepcopy(policy_state)
+    state = clone_decoding_policy_state(policy_state)
     while state.step_id < steps:
         state.sample_partial_decoding_policy(
             steps=steps,
@@ -136,12 +165,19 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         advantage = sum(child_rewards[i][j] - prompt_means[j] for j in range(n_prompts)) / n_prompts
         advantages.append(advantage)
 
-    # Step 4: GRPO Loss and Logit Update (assume update on temperature logits)
-    log_probs = parent.log_softmax_probs()  # pulled from DecodingPolicyState
-    loss = -sum(advantages[i] * log_probs[i] for i in range(n_children))
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+    # Step 4: Safe GRPO loss with detached logprobs
+    loss = torch.tensor(0.0, dtype=torch.float32, requires_grad=True)
+    for i in range(n_children):
+        temp_logprob = children[i].temperature_logprob
+        remask_logprob = children[i].remasking_logprob
+
+        # Defensive: skip if logprobs are missing or broken
+        if temp_logprob is None or remask_logprob is None:
+            print(f"Child {i} has missing logprobs. Skipping...")
+            continue
+
+        total_logprob = temp_logprob + remask_logprob
+        loss = loss - (advantages[i] * total_logprob)
 
     # Step 5: Optional: Propagate value upward
     for i, child in enumerate(children):

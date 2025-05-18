@@ -11,7 +11,11 @@ class MCTSNode:
         self.visits = 0
         self.completed_state = None
 
-        self.branching_factor = branching_factor  # still needed for expansion logic
+        self.branching_factor = branching_factor
+
+        # === NEW: Store logprobs from sampled decisions ===
+        self.temperature_logprob = getattr(state, "temperature_logprob", torch.tensor(0.0))
+        self.remasking_logprob = getattr(state, "remasking_logprob", torch.tensor(0.0))
 
     def is_fully_expanded(self, branching_factor):
         return len(self.children) >= branching_factor
@@ -28,11 +32,9 @@ class MCTSNode:
         return max(self.children, key=lambda child: child.ucb_score())
 
     def softmax_probs(self):
-        """Return softmax over decoding policy logits (e.g., temperature) from self.state."""
         return torch.nn.functional.softmax(self.state.temperature_logits, dim=0)
 
     def log_softmax_probs(self):
-        """Return log-softmax over decoding policy logits (e.g., temperature) from self.state."""
         return torch.nn.functional.log_softmax(self.state.temperature_logits, dim=0)
 
     def __repr__(self):
@@ -42,6 +44,8 @@ class MCTSNode:
         return {
             "value_sum": self.value_sum,
             "visits": self.visits,
+            "temperature_logprob": self.temperature_logprob.item() if self.temperature_logprob is not None else 0.0,
+            "remasking_logprob": self.remasking_logprob.item() if self.remasking_logprob is not None else 0.0,
             "decoding_policy": {
                 "temperature_schedule": self.state.temperature_schedule,
                 "remasking_strategy_schedule": self.state.remasking_strategy_schedule,
@@ -69,5 +73,7 @@ class MCTSNode:
         node = MCTSNode(state=state, parent=parent)
         node.value_sum = data["value_sum"]
         node.visits = data["visits"]
+        node.temperature_logprob = torch.tensor(data.get("temperature_logprob", 0.0))
+        node.remasking_logprob = torch.tensor(data.get("remasking_logprob", 0.0))
         node.children = [MCTSNode.from_dict(child_data, parent=node) for child_data in data["children"]]
         return node

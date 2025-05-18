@@ -50,10 +50,12 @@ class DecodingPolicyState():
             temp_probs = F.softmax(self.temperature_logits, dim=0)
             temperature_idx = torch.multinomial(temp_probs, 1).item()
             temperature = self.possible_temperatures[temperature_idx]
+            self.temperature_logprob = torch.log(temp_probs[temperature_idx] + 1e-8)  # store logprob
 
             remask_probs = F.softmax(self.remasking_logits, dim=0)
             remasking_idx = torch.multinomial(remask_probs, 1).item()
             remasking_strategy = self.possible_remasking_strategies[remasking_idx]
+            self.remasking_logprob = torch.log(remask_probs[remasking_idx] + 1e-8)  # store logprob
 
             # === Update state ===
             self.temperature_schedule.append(temperature)
