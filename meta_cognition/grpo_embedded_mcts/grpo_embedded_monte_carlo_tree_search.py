@@ -58,7 +58,8 @@ def test_time_grpo_embedded_mcts(num_folio_questions_to_sample_test,
     iters, 
     branching_factor, 
     top_k, 
-    phase_1_rollouts,
+    num_phase1_groups,
+    rollouts_per_group,
     model_name, 
     metadata_filename, 
     tree_filename,
@@ -82,7 +83,8 @@ def test_time_grpo_embedded_mcts(num_folio_questions_to_sample_test,
         iters=iters,
         branching_factor=branching_factor,
         top_k=top_k,
-        phase_1_rollouts=phase_1_rollouts,
+        num_phase1_groups=num_phase1_groups,
+        rollouts_per_group=rollouts_per_group,
         **sampling_kwargs,
     )
 
@@ -98,7 +100,8 @@ def test_time_grpo_embedded_mcts(num_folio_questions_to_sample_test,
         "iters": iters,
         "branching_factor": branching_factor,
         "top_k": top_k,
-        "phase_1_rollouts": phase_1_rollouts,
+        "num_phase1_groups": num_phase1_groups,
+        "rollouts_per_group": rollouts_per_group,
         "possible_temperatures": sampling_kwargs["possible_temperatures"],
         "possible_remasking_strategies": sampling_kwargs["possible_remasking_strategies"],
         "gen_length": sampling_kwargs["gen_length"],
@@ -158,7 +161,8 @@ def main():
     possible_remasking_strategies = ["low_confidence", "random"]
     gen_length = 128
     max_num_blocks = 4 # Depth of the tree
-    phase_1_rollouts = 10 # Number of rollouts to perform in phase 1, which is basically pretraining the best distribution of temperature and remasking strategies for a given node
+    num_phase1_groups = 2
+    rollouts_per_group = 5
 
     # Dataset parameters
     num_folio_questions_to_sample_test = 1 # Try smaller set for testing. basically, hyper-optimizing to 1 question.
@@ -184,7 +188,8 @@ def main():
         iters, 
         branching_factor,
         top_k, 
-        phase_1_rollouts,
+        num_phase1_groups,
+        rollouts_per_group,
         model_name, 
         test_time_metadata_filename, 
         test_time_tree_filename, 

@@ -53,7 +53,7 @@ fi
 TRAINED_TREES_DIR="./trained_trees"
 GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME="pre_training_grpo_embedded_mcts_tree_snapshot.json"
 GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME="pre_training_grpo_embedded_mcts_metadata.json"
-read -p "Would you like to run the GRPO-embedded MCTS script on the remote instance? (y/n): " run
+read -p "Would you like to run the GRPO-embedded MCTS script on the remote instance? (y/n): " run_mode
 if [[ $run_mode == "y" ]]; then # pre-training from scratch
 
     echo "Running GRPO-embedded MCTS script for pre-training from scratch on remote instance for model variant: Instruct..."

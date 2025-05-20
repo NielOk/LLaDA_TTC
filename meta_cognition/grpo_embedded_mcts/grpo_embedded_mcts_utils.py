@@ -55,7 +55,10 @@ def collect_all_child_logits(node):
 
 
 # === Expansion ===
-def expand_node_with_pretraining(node, branching_factor, steps, model, tokenizer, prompts, labels, optimizer, phase_1_rollouts=5, **sampling_kwargs):
+def expand_node_with_pretraining(
+    node, branching_factor, steps, model, tokenizer, prompts, labels, optimizer, 
+    num_phase1_groups=2, rollouts_per_group=5, **sampling_kwargs
+):
     if node.is_terminal(steps):
         print(f"Skipping expansion: terminal node with step_id {node.state.step_id}")
         return []
@@ -63,9 +66,11 @@ def expand_node_with_pretraining(node, branching_factor, steps, model, tokenizer
     print("=== EXPANDING NODE WITH GRPO PRETRAINING ===")
     print(f"Parent step_id = {node.state.step_id}, block_id = {node.state.block_id}")
 
-    # === Phase 1: Temporary exploratory rollouts to update logits ===
+    # === Phase 1: Multiple GRPO groups ===
+    print("=== Phase 1: Multiple GRPO groups ===")
     temp_children = []
-    for _ in range(phase_1_rollouts):
+    total_rollouts = num_phase1_groups * rollouts_per_group
+    for _ in range(total_rollouts):
         child_state = clone_decoding_policy_state(node.state)
         child_state.sample_partial_decoding_policy(
             steps=steps,
@@ -75,9 +80,12 @@ def expand_node_with_pretraining(node, branching_factor, steps, model, tokenizer
         child = MCTSNode(state=child_state, parent=node, branching_factor=branching_factor)
         temp_children.append(child)
 
-    grpo_update_per_prompt(temp_children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
+    for g in range(num_phase1_groups):
+        group = temp_children[g * rollouts_per_group:(g + 1) * rollouts_per_group]
+        grpo_update_per_prompt(group, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
 
     # === Phase 2: Final child sampling from improved logits ===
+    print("=== Phase 2: Final child sampling from improved logits ===")
     final_children = []
     for _ in range(branching_factor):
         child_state = clone_decoding_policy_state(node.state)
@@ -193,7 +201,7 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
 
 
 # === Main Search ===
-def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, phase_1_rollouts=5, resume_node=None, **sampling_kwargs):
+def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branching_factor=2, top_k=3, num_phase1_groups=2, rollouts_per_group=5, resume_node=None, **sampling_kwargs):
     if resume_node is None:
         root = MCTSNode(
             state=DecodingPolicyState(
@@ -223,7 +231,8 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
                 prompts=prompts,
                 labels=labels,
                 optimizer=optimizer,
-                phase_1_rollouts=phase_1_rollouts,  # You can expose this as an argument if needed
+                num_phase1_groups=num_phase1_groups,
+                rollouts_per_group=rollouts_per_group,
                 **sampling_kwargs
             )
             print(f"[LOG] Expanded {len(children)} children at node: {node}")
