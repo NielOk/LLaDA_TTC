@@ -50,8 +50,7 @@ def convert_prompts_to_input_ids(prompts, tokenizer, device):
 
     return input_ids_list
 
-def train_tree_from_scratch(num_folio_questions_to_sample_train, 
-    num_folio_questions_to_sample_test, 
+def test_time_grpo_embedded_mcts(num_folio_questions_to_sample_test, 
     device, 
     tokenizer, 
     model, 
@@ -59,6 +58,7 @@ def train_tree_from_scratch(num_folio_questions_to_sample_train,
     iters, 
     branching_factor, 
     top_k, 
+    phase_1_rollouts,
     model_name, 
     metadata_filename, 
     tree_filename,
@@ -68,22 +68,21 @@ def train_tree_from_scratch(num_folio_questions_to_sample_train,
     Perform GRPO-embedded MCTS over decoding polciies from scratch"""
 
     # Get train and test sets
-    all_formatted_questions, all_labels = load_folio_train_dataset(num_questions_to_sample=num_folio_questions_to_sample_train + num_folio_questions_to_sample_test)
-    train_formatted_questions, train_labels = all_formatted_questions[:num_folio_questions_to_sample_train], all_labels[:num_folio_questions_to_sample_train]
-    test_formatted_questions, test_labels = all_formatted_questions[num_folio_questions_to_sample_train:], all_labels[num_folio_questions_to_sample_train:]
+    test_formatted_questions, test_labels = load_folio_train_dataset(num_questions_to_sample=num_folio_questions_to_sample_test)
     
     # Convert training set to input ids
-    train_input_ids_list = convert_prompts_to_input_ids(train_formatted_questions, tokenizer, device)
+    test_input_ids_list = convert_prompts_to_input_ids(test_formatted_questions, tokenizer, device)
 
     root, top_policies = search_shared(
         model=model, 
         tokenizer=tokenizer,
-        prompts=train_input_ids_list,
-        labels=train_labels,
+        prompts=test_input_ids_list,
+        labels=test_labels,
         steps=steps,
         iters=iters,
         branching_factor=branching_factor,
         top_k=top_k,
+        phase_1_rollouts=phase_1_rollouts,
         **sampling_kwargs,
     )
 
@@ -92,17 +91,14 @@ def train_tree_from_scratch(num_folio_questions_to_sample_train,
     top_policies_dict['metadata'] = {
         "description": "Top policies and metadata from GRPO-embedded MCTS over decoding policies pretraining",
         "model_name": model_name,
-        "num_questions_sampled_for_training": num_folio_questions_to_sample_train,
         "num_questions_sampled_for_testing": num_folio_questions_to_sample_test,
-        "num_questions_sampled": num_folio_questions_to_sample_train + num_folio_questions_to_sample_test,
-        "folio_train_dataset_prompts": train_formatted_questions,
-        "folio_train_dataset_labels": train_labels,
         "folio_test_dataset_prompts": test_formatted_questions,
         "folio_test_dataset_labels": test_labels,
         "steps": steps,
         "iters": iters,
         "branching_factor": branching_factor,
         "top_k": top_k,
+        "phase_1_rollouts": phase_1_rollouts,
         "possible_temperatures": sampling_kwargs["possible_temperatures"],
         "possible_remasking_strategies": sampling_kwargs["possible_remasking_strategies"],
         "gen_length": sampling_kwargs["gen_length"],
@@ -126,57 +122,6 @@ def train_tree_from_scratch(num_folio_questions_to_sample_train,
         json.dump(root.to_dict(), f, indent=2)
     print(f"Saved tree to {tree_filename}")
 
-def train_additional_iters(num_additional_iters, device, tokenizer, model, metadata_filename, tree_filename):
-    """
-    Load the tree and metadata, and perform additional iterations of GRPO-embedded MCTS.
-    """
-    with open(metadata_filename) as f:
-        metadata = json.load(f)
-    with open(tree_filename) as f:
-        root = MCTSNode.from_dict(json.load(f))
-
-    steps = metadata['metadata']['steps']
-    branching_factor = metadata['metadata']['branching_factor']
-    top_k = metadata['metadata']['top_k']
-
-    sampling_kwargs = {
-        "possible_temperatures": metadata['metadata']['possible_temperatures'],
-        "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],
-        "gen_length": metadata['metadata']['gen_length'],
-        "max_num_blocks": metadata['metadata']['max_num_blocks']
-    }
-
-    train_formatted_questions = metadata['metadata']['folio_train_dataset_prompts']
-    train_labels = metadata['metadata']['folio_train_dataset_labels']
-
-    train_input_ids_list = convert_prompts_to_input_ids(train_formatted_questions, tokenizer, device)
-
-    # Perform additional iterations of GRPO-embedded MCTS
-    resume_node = root
-    root, top_policies = search_shared(
-        model=model, 
-        tokenizer=tokenizer,
-        prompts=train_input_ids_list,
-        labels=train_labels,
-        steps=steps,
-        iters=num_additional_iters,
-        branching_factor=branching_factor,
-        top_k=top_k,
-        resume_node=resume_node,
-        **sampling_kwargs,
-    )
-
-    # Save the top policies and metadata, only update is the number of iterations
-    metadata['metadata']['iters'] += num_additional_iters
-    with open(metadata_filename, "w") as f:
-        json.dump(metadata, f, indent=2)
-    print(f"Saved metadata to {metadata_filename}")
-    
-    # Save the updated tree
-    with open(tree_filename, "w") as f:
-        json.dump(root.to_dict(), f, indent=2)
-    print(f"Saved updated metadata to {tree_filename}")
-
 def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_kwargs):
     '''
     Evaluate a single policy on a single prompt and label and score it.
@@ -192,98 +137,7 @@ def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_k
 
     return decoded_output, reward
 
-def test_time_grpo_embedded_mcts(test_time_iters, 
-    device, 
-    tokenizer, 
-    model, 
-    pre_trained_metadata_filename, 
-    pre_trained_tree_filename, 
-    test_time_metadata_filename, 
-    test_time_tree_filename
-    ):
-    '''
-    Load the tree and metadata, then on the test set, perform GRPO-embedded MCTS, collect top policies, and score
-    '''
-    with open(pre_trained_metadata_filename) as f:
-        metadata = json.load(f)
-    with open(pre_trained_tree_filename) as f:
-        root = MCTSNode.from_dict(json.load(f))
-
-    steps = metadata['metadata']['steps']
-    branching_factor = metadata['metadata']['branching_factor']
-    top_k = metadata['metadata']['top_k']
-
-    sampling_kwargs = {
-        "possible_temperatures": metadata['metadata']['possible_temperatures'],
-        "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],
-        "gen_length": metadata['metadata']['gen_length'],
-        "max_num_blocks": metadata['metadata']['max_num_blocks']
-    }
-
-    test_formatted_questions = metadata['metadata']['folio_test_dataset_prompts']
-    test_labels = metadata['metadata']['folio_test_dataset_labels']
-
-    test_input_ids_list = convert_prompts_to_input_ids(test_formatted_questions, tokenizer, device)
-
-    # Perform test-time GRPO-embedded MCTS on the pre-trained tree
-    resume_node = root
-    test_time_root, test_time_top_policies = search_shared(
-        model=model, 
-        tokenizer=tokenizer,
-        prompts=test_input_ids_list,
-        labels=test_labels,
-        steps=steps,
-        iters=test_time_iters,
-        branching_factor=branching_factor,
-        top_k=top_k,
-        resume_node=resume_node,
-        **sampling_kwargs,
-    )
-
-    # Save and evaluate the top policies and metadata 
-    metadata['metadata']['description'] = 'Top policies and metadata from GRPO-embedded MCTS over decoding policies at test time'
-    metadata['metadata']['test_time_iters'] = test_time_iters
-
-    for i, policy in enumerate(test_time_top_policies):
-        metadata[f"test_time_policy_{i}"] = {
-            "temperature_schedule": policy.temperature_schedule,
-            "remasking_strategy_schedule": policy.remasking_strategy_schedule,
-            "block_schedule": policy.block_schedule,
-            "extra_step_proportions": policy.extra_step_proportions
-        }
-
-        # Evaluate the policy on the test set
-        for text_prompt, tokenized_prompt, label in zip(test_formatted_questions, test_input_ids_list, test_labels):
-            decoded_output, reward = evaluate_policy(model, tokenizer, tokenized_prompt, label, policy, steps, **sampling_kwargs)
-            metadata[f'test_time_policy_{i}']['evals'] = {
-                "prompt": text_prompt, 
-                "label": label,
-                "decoded_output": decoded_output, 
-                "reward": reward
-            }
-
-    # Save the evaluated metadata
-    with open(test_time_metadata_filename, "w") as f:
-        json.dump(metadata, f, indent=2)
-    print(f"Saved metadata to {test_time_metadata_filename}")
-    
-    # Save the tree
-    with open(test_time_tree_filename, "w") as f:
-        json.dump(test_time_root.to_dict(), f, indent=2)
-    print(f"Saved tree to {test_time_tree_filename}")
-
 def main():
-    parser = argparse.ArgumentParser(description="GRPO-embedded MCTS over Decoding Policies")
-    parser.add_argument('--mode', choices=['1', '2', '3'], default='pretrain_from_scratch') # 1: pretrain from scratch, 2: pretrain from snapshot, 3: test time
-    args = parser.parse_args()
-
-    if args.mode == '1':
-        args.mode = 'pretrain_from_scratch'
-    elif args.mode == '2':
-        args.mode = 'pretrain_from_snapshot'
-    elif args.mode == '3':
-        args.mode = 'test_time'
-
     device = 'cuda'
 
     print("started model loading...")
@@ -304,10 +158,10 @@ def main():
     possible_remasking_strategies = ["low_confidence", "random"]
     gen_length = 128
     max_num_blocks = 4 # Depth of the tree
+    phase_1_rollouts = 10 # Number of rollouts to perform in phase 1, which is basically pretraining the best distribution of temperature and remasking strategies for a given node
 
     # Dataset parameters
-    num_folio_questions_to_sample_train = 4 # Trying small set for training
-    num_folio_questions_to_sample_test = 2 # Try smaller set for testing
+    num_folio_questions_to_sample_test = 1 # Try smaller set for testing. basically, hyper-optimizing to 1 question.
 
     sampling_kwargs = {
         "possible_temperatures": possible_temperatures,
@@ -317,46 +171,25 @@ def main():
     }
 
     # Filenames
-    pre_training_metadata_filename = "pre_training_grpo_embedded_mcts_metadata.json"
-    pre_training_tree_filename = "pre_training_grpo_embedded_mcts_tree_snapshot.json"
-
     test_time_metadata_filename = "test_time_grpo_embedded_mcts_metadata.json"
     test_time_tree_filename = "test_time_grpo_embedded_mcts_tree_snapshot.json"
 
-    if args.mode == 'pretrain_from_scratch': # Train the tree from scratch
-        print("Training tree from scratch...")
-        train_tree_from_scratch(
-            num_folio_questions_to_sample_train, 
-            num_folio_questions_to_sample_test, 
-            device, 
-            tokenizer, 
-            model, 
-            steps, 
-            iters, 
-            branching_factor,
-            top_k, 
-            model_name, 
-            pre_training_metadata_filename, 
-            pre_training_tree_filename, 
-            **sampling_kwargs
-        )
-    elif args.mode == 'pretrain_from_snapshot': # Train the tree from a snapshot
-        print("Training additional iterations on the tree from a snapshot...")
-        num_additional_iters = 2
-        train_additional_iters(num_additional_iters, device, tokenizer, model, pre_training_metadata_filename, pre_training_tree_filename)
-    elif args.mode == 'test_time': # Test time GRPO-embedded MCTS
-        print("Performing test time GRPO-embedded MCTS...")
-        test_time_iters = 1
-        test_time_grpo_embedded_mcts(
-            test_time_iters, 
-            device, 
-            tokenizer, 
-            model, 
-            pre_training_metadata_filename, 
-            pre_training_tree_filename, 
-            test_time_metadata_filename, 
-            test_time_tree_filename
-        )
+    print("Training tree from scratch...")
+    test_time_grpo_embedded_mcts(
+        num_folio_questions_to_sample_test, 
+        device, 
+        tokenizer, 
+        model, 
+        steps, 
+        iters, 
+        branching_factor,
+        top_k, 
+        phase_1_rollouts,
+        model_name, 
+        test_time_metadata_filename, 
+        test_time_tree_filename, 
+        **sampling_kwargs
+    )
 
 if __name__ == '__main__':
     main()

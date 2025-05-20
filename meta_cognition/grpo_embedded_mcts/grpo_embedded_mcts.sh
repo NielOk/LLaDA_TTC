@@ -53,25 +53,11 @@ fi
 TRAINED_TREES_DIR="./trained_trees"
 GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME="pre_training_grpo_embedded_mcts_tree_snapshot.json"
 GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME="pre_training_grpo_embedded_mcts_metadata.json"
-read -p "Which mode would you like to run? Just input the number (1: pre-training from scratch, 2: pre-training from checkpoint, 3. test-time): " run_mode
-if [[ $run_mode == "1" ]]; then # pre-training from scratch
+read -p "Would you like to run the GRPO-embedded MCTS script on the remote instance? (y/n): " run
+if [[ $run_mode == "y" ]]; then # pre-training from scratch
 
     echo "Running GRPO-embedded MCTS script for pre-training from scratch on remote instance for model variant: Instruct..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT --mode $run_mode > pre_train_from_scratch_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
-elif [[ $run_mode == "2" ]]; then # pre-training from checkpoint
-    echo "copying pre-trained tree and metadata files to remote instance..."
-    scp -i "$private_ssh_key" "$TRAINED_TREES_DIR/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME" "$remote_ssh_user@$remote_ssh_host:~/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME"
-    scp -i "$private_ssh_key" "$TRAINED_TREES_DIR/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME" "$remote_ssh_user@$remote_ssh_host:~/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME"
-
-    echo "Running GRPO-embedded MCTS script for pre-training from checkpoint on remote instance for model variant: Instruct..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT --mode $run_mode > pre_train_from_checkpoint_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
-elif [[ $run_mode == "3" ]]; then
-    echo "copying pre-trained tree and metadata files to remote instance..."
-    scp -i "$private_ssh_key" "$TRAINED_TREES_DIR/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME" "$remote_ssh_user@$remote_ssh_host:~/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_JSON_NAME"
-    scp -i "$private_ssh_key" "$TRAINED_TREES_DIR/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME" "$remote_ssh_user@$remote_ssh_host:~/$GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME"
-
-    echo "Running GRPO-embedded MCTS script for test-time on remote instance for model variant: Instruct..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT --mode $run_mode > test_time_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT > pre_train_from_scratch_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
 else
     echo "Skipping GRPO-embedded MCTS script execution."
 fi
