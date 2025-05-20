@@ -128,9 +128,26 @@ def extract_final_answer(output):
     return "None"
 
 
-def compute_reward(output, reference_label):
+def compute_reward(prompt, output):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are scoring the output of another language model for a first order logic task. You are given a question and the model's reasoning process and answer."},
+            {"role": "user", "content": f"This is the question: {prompt}. This is the model's reasoning process and answer: {output}. How many valid reasoning steps did the model take? How many relevant premises were incorporated into the reasoning? Return a vector of 2 numbers in the following format: [number_of_valid_steps, number_of_relevant_premises]"}
+        ]
+    )
+
     prediction = extract_final_answer(output)
-    return 1.0 if prediction.strip().lower() == reference_label.lower() else 0.0
+
+    reward = response.choices[0].message.content.strip()
+    if not reward.startswith("[") or not reward.endswith("]"):
+        print(f"Invalid reward format: {reward}")
+        return 0, prediction
+    
+    reward_0 = int(reward.split(",")[0].split("[")[1].strip())
+    reward_1 = int(reward.split(",")[1].split("]")[0].strip())
+    total_reward = reward_0 + reward_1
+    return total_reward, prediction
 
 
 # === GRPO Update with Reward Propagation ===
@@ -164,9 +181,9 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
             )
             decoded_output = tokenizer.batch_decode(output[:, prompt.shape[1]:], skip_special_tokens=True)[0]
             print(f"Child {i}, Prompt {j}: Decoded output: {decoded_output}")
-            reward = compute_reward(decoded_output, reference_label)
-            print(f"Child {i}, Prompt {j}: Reward = {reward}")
-            child_rewards[i][j] = reward
+            total_reward, prediction = compute_reward(prompt, decoded_output)
+            print(f"Child {i}, Prompt {j}: Reward = {total_reward}, Prediction = {prediction}")
+            child_rewards[i][j] = total_reward
 
     # Step 2: Per-prompt mean reward
     prompt_means = [sum(child_rewards[i][j] for i in range(n_children)) / n_children for j in range(n_prompts)]

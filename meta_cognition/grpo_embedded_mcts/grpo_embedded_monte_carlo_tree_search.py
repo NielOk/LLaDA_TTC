@@ -135,10 +135,10 @@ def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_k
     print(f"Prompt: {prompt}")
     print(f"Decoded output: {decoded_output}")
     print(f"Label: {label}")
-    reward = compute_reward(decoded_output, label)
-    print(f"Reward: {reward}")
+    total_reward, prediction = compute_reward(prompt, decoded_output)
+    print(f"Reward: {total_reward}")
 
-    return decoded_output, reward
+    return decoded_output, total_reward, prediction
 
 def main():
     device = 'cuda'
