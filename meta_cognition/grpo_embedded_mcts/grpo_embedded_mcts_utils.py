@@ -194,7 +194,14 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         advantage = sum(child_rewards[i][j] - prompt_means[j] for j in range(n_prompts)) / n_prompts
         advantages.append(advantage)
 
-    # Step 4: Safe GRPO loss with detached logprobs
+    # Step 4: Normalize advantages to mean 0, std 1
+    mean_adv = sum(advantages) / len(advantages)
+    std_adv = (sum((a - mean_adv) ** 2 for a in advantages) / len(advantages)) ** 0.5
+    std_adv = max(std_adv, 1e-6)  # avoid divide-by-zero
+
+    advantages = [(a - mean_adv) / std_adv for a in advantages]
+
+    # Step 5: Safe GRPO loss with detached logprobs
     loss = torch.tensor(0.0, dtype=torch.float32, requires_grad=True)
     for i in range(n_children):
         temp_logprob = children[i].temperature_logprob
@@ -208,7 +215,7 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         total_logprob = temp_logprob + remask_logprob
         loss = loss - (advantages[i] * total_logprob)
 
-    # Step 5: Optional: Propagate value upward
+    # Step 6: Propagate value upward
     for i, child in enumerate(children):
         node = child
         while node is not None:
