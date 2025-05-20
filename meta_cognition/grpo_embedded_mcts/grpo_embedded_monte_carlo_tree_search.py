@@ -167,34 +167,38 @@ def main():
     # Dataset parameters
     num_folio_questions_to_sample_test = 1 # Try smaller set for testing. basically, hyper-optimizing to 1 question.
 
-    sampling_kwargs = {
-        "possible_temperatures": possible_temperatures,
-        "possible_remasking_strategies": possible_remasking_strategies,
-        "gen_length": gen_length,
-        "max_num_blocks": max_num_blocks,
-    }
+    for i in range(num_folio_questions_to_sample_test):
+        print(f"Sampled question {i+1} of {num_folio_questions_to_sample_test}")
 
-    # Filenames
-    test_time_metadata_filename = "test_time_grpo_embedded_mcts_metadata.json"
-    test_time_tree_filename = "test_time_grpo_embedded_mcts_tree_snapshot.json"
+        sampling_kwargs = {
+            "possible_temperatures": possible_temperatures,
+            "possible_remasking_strategies": possible_remasking_strategies,
+            "gen_length": gen_length,
+            "max_num_blocks": max_num_blocks,
+        }
 
-    print("Training tree from scratch...")
-    test_time_grpo_embedded_mcts(
-        num_folio_questions_to_sample_test, 
-        device, 
-        tokenizer, 
-        model, 
-        steps, 
-        iters, 
-        branching_factor,
-        top_k, 
-        num_phase1_groups,
-        rollouts_per_group,
-        model_name, 
-        test_time_metadata_filename, 
-        test_time_tree_filename, 
-        **sampling_kwargs
-    )
+        # Filenames
+        test_time_metadata_filename = f"test_time_grpo_embedded_mcts_metadata_{i}.json"
+        test_time_tree_filename = f"test_time_grpo_embedded_mcts_tree_snapshot_{i}.json"
+
+        print("Training tree from scratch...")
+        num_questions_run = 1
+        test_time_grpo_embedded_mcts(
+            num_questions_run, 
+            device, 
+            tokenizer, 
+            model, 
+            steps, 
+            iters, 
+            branching_factor,
+            top_k, 
+            num_phase1_groups,
+            rollouts_per_group,
+            model_name, 
+            test_time_metadata_filename, 
+            test_time_tree_filename, 
+            **sampling_kwargs
+        )
 
 if __name__ == '__main__':
     main()
