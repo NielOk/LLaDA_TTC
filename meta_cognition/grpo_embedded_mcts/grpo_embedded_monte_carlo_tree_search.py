@@ -33,7 +33,7 @@ def load_folio_train_dataset(num_questions_to_sample=1000):
         conclusion = sample["conclusion"]
         label = sample["label"]
 
-        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following words by itself as your answer: "False", "Uncertain", or "True".'
+        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself, making sure it is the absolute last piece of text you output, also making sure there are no extra characters surrounding your answer: False, Uncertain, or True.'
         formatted_questions.append((formatted_question))
         labels.append(label)
     

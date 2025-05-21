@@ -4,6 +4,7 @@ import openai
 import torch
 from dotenv import load_dotenv
 import os
+import re
 
 from decoding_policy_state import DecodingPolicyState
 from policy_based_decoding_utils import *
@@ -133,21 +134,23 @@ def compute_reward(prompt, output):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are scoring the output of another language model for a first order logic task. You are given a question and the model's reasoning process and answer."},
-            {"role": "user", "content": f"This is the question: {prompt}. This is the model's reasoning process and answer: {output}. How many valid reasoning steps did the model take? How many relevant premises were incorporated into the reasoning? Return a vector of 2 numbers in the following format: [number_of_valid_steps, number_of_relevant_premises]"}
+            {"role": "user", "content": f"This is the question: {prompt}. This is the model's reasoning process and answer: {output}. How many valid reasoning steps did the model take? How many relevant premises were incorporated into the reasoning? Return a vector of 2 numbers in the following format, including the square brackets, making sure it is the absolute last piece of text you output: [number_of_valid_steps, number_of_relevant_premises]"}
         ]
     )
 
     prediction = extract_final_answer(output)
+    content = response.choices[0].message.content.strip()
 
-    reward = response.choices[0].message.content.strip()
-    if not reward.startswith("[") or not reward.endswith("]"):
-        print(f"Invalid reward format: {reward}")
+    # Use regex to extract the last bracketed pair of integers
+    match = re.search(r"\[(\d+),\s*(\d+)\]\s*$", content)
+    if match:
+        reward_0 = int(match.group(1))
+        reward_1 = int(match.group(2))
+        total_reward = reward_0 + reward_1
+        return total_reward, prediction
+    else:
+        print(f"Invalid reward format: {content}")
         return 0, prediction
-    
-    reward_0 = int(reward.split(",")[0].split("[")[1].strip())
-    reward_1 = int(reward.split(",")[1].split("]")[0].strip())
-    total_reward = reward_0 + reward_1
-    return total_reward, prediction
 
 
 # === GRPO Update with Reward Propagation ===
