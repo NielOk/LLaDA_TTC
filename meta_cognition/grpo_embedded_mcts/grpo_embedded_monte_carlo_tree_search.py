@@ -33,7 +33,7 @@ def load_folio_train_dataset(num_questions_to_sample=1000):
         conclusion = sample["conclusion"]
         label = sample["label"]
 
-        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself, making sure it is the absolute last piece of text you output, also making sure there are no extra characters surrounding your answer: False, Uncertain, or True.'
+        formatted_question = f'The following facts are given: {premise}. Is the conclusion "{conclusion}" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself as your final answer: False, Uncertain, or True'
         formatted_questions.append((formatted_question))
         labels.append(label)
     
@@ -108,7 +108,7 @@ def test_time_grpo_embedded_mcts(num_folio_questions_to_sample_test,
         "max_num_blocks": sampling_kwargs["max_num_blocks"]
     }
     for i, policy in enumerate(top_policies):
-        top_policies_dict[f"pretrained_policy_{i}"] = {
+        top_policies_dict[f"test_time_policy_{i}"] = {
             "temperature_schedule": policy.temperature_schedule,
             "remasking_strategy_schedule": policy.remasking_strategy_schedule,
             "block_schedule": policy.block_schedule,
@@ -209,10 +209,17 @@ def main():
             metadata = json.load(f)
         with open(test_time_tree_filename, "r") as f:
             tree = json.load(f)
-        top_policy = metadata['metadata']['top_policies'][0]
         prompt = metadata['metadata']['folio_test_dataset_prompts'][0]
         label = metadata['metadata']['folio_test_dataset_labels'][0]
         prompt = convert_prompts_to_input_ids([prompt], tokenizer, device)[0]
+        top_policy = DecodingPolicyState(
+            possible_temperatures=metadata['metadata']['possible_temperatures'],
+            possible_remasking_strategies=metadata['metadata']['possible_remasking_strategies']
+        )
+        top_policy.temperature_schedule = metadata[f"test_time_policy_0"]["temperature_schedule"]
+        top_policy.remasking_strategy_schedule = metadata[f"test_time_policy_0"]["remasking_strategy_schedule"]
+        top_policy.block_schedule = metadata[f"test_time_policy_0"]["block_schedule"]
+        top_policy.extra_step_proportions = metadata[f"test_time_policy_0"]["extra_step_proportions"]
         sampling_kwargs = {
             "possible_temperatures": metadata['metadata']['possible_temperatures'],
             "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],

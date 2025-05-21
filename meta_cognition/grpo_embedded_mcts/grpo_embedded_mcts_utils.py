@@ -119,12 +119,13 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
 
 # === Reward computation ===
 def extract_final_answer(output):
-    for line in reversed(output.strip().splitlines()):
-        line = line.strip()
-        if line in {"True", "False", "Uncertain"}:
-            print(f"Extracted Answer: {line}")
-            return line
-    
+    # Match 'True', 'False', or 'Uncertain' at the end, optionally followed by punctuation and whitespace
+    match = re.search(r'\b(True|False|Uncertain)\b[\s\.,;:]*$', output.strip(), re.IGNORECASE)
+    if match:
+        final = match.group(1).capitalize()
+        print(f"Extracted Answer: {final}")
+        return final
+
     print("No valid answer extracted from the output.")
     return "None"
 
