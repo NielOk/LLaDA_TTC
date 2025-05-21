@@ -200,5 +200,40 @@ def main():
             **sampling_kwargs
         )
 
+    for i in range(num_folio_questions_to_sample_test):
+        test_time_metadata_filename = f"test_time_grpo_embedded_mcts_metadata_{i}.json"
+        test_time_tree_filename = f"test_time_grpo_embedded_mcts_tree_snapshot_{i}.json"
+
+        ## Evaluate the top policy ##
+        with open(test_time_metadata_filename, "r") as f:
+            metadata = json.load(f)
+        with open(test_time_tree_filename, "r") as f:
+            tree = json.load(f)
+        top_policy = metadata['metadata']['top_policies'][0]
+        prompt = metadata['metadata']['folio_test_dataset_prompts'][0]
+        label = metadata['metadata']['folio_test_dataset_labels'][0]
+        prompt = convert_prompts_to_input_ids([prompt], tokenizer, device)[0]
+        sampling_kwargs = {
+            "possible_temperatures": metadata['metadata']['possible_temperatures'],
+            "possible_remasking_strategies": metadata['metadata']['possible_remasking_strategies'],
+            "gen_length": metadata['metadata']['gen_length'],
+            "max_num_blocks": metadata['metadata']['max_num_blocks'],
+        }
+
+        decoded_output, total_reward, prediction = evaluate_policy(
+            model=model,
+            tokenizer=tokenizer,
+            prompt=prompt,
+            label=label,
+            policy=top_policy,
+            steps=steps,
+            **sampling_kwargs
+        )
+
+        print(f"Decoded output: {decoded_output}")
+        print(f"Prediction: {prediction}")
+        print(f"Label: {label}")
+        print(f"Reward: {total_reward}")
+
 if __name__ == '__main__':
     main()
