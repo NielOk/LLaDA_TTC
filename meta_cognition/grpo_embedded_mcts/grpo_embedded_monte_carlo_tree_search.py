@@ -156,7 +156,7 @@ def main():
     iters = 3
     branching_factor = 2 # number of children to sample at each node
     top_k = 3
-    possible_temperatures = [0.7, 1.0]
+    possible_temperatures = [0.1, 0.0, 0.2]
     possible_remasking_strategies = ["low_confidence", "random"]
     gen_length = 128
     max_num_blocks = 4 # Depth of the tree

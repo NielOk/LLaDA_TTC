@@ -14,6 +14,8 @@ class DecodingPolicyState():
         self.remasking_strategy_schedule = []
         self.block_schedule = []
         self.extra_step_proportions = []
+        self.sampled_temperature_index = None
+        self.sampled_remasking_index = None
 
         self.step_id = 0
         self.block_id = 0
@@ -62,6 +64,8 @@ class DecodingPolicyState():
             self.remasking_strategy_schedule.append(remasking_strategy)
             self.block_schedule.append(block_length)
             self.extra_step_proportions.append(extra_step_proportion)
+            self.sampled_temperature_index = temperature_idx
+            self.sampled_remasking_index = remasking_idx
             self.block_end_step_id = self.step_id + block_length
             self.block_id += 1
 

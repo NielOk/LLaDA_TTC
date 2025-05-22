@@ -41,6 +41,8 @@ def clone_decoding_policy_state(source_state):
     cloned.child_logits = source_state.child_logits
     cloned.temperature_logprob = getattr(source_state, "temperature_logprob", None)
     cloned.remasking_logprob = getattr(source_state, "remasking_logprob", None)
+    cloned.sampled_temperature_index = getattr(source_state, "sampled_temperature_index", None)
+    cloned.sampled_remasking_index = getattr(source_state, "sampled_remasking_index", None)
 
     return cloned
 
@@ -117,10 +119,10 @@ def rollout_policy(policy_state, steps, **sampling_kwargs):
     return state
 
 
-# === Reward computation ===
+# === Reward Computation ===
 def extract_final_answer(output):
-    # Match 'True', 'False', or 'Uncertain' at the end, optionally followed by punctuation and whitespace
-    match = re.search(r'\b(True|False|Uncertain)\b[\s\.,;:]*$', output.strip(), re.IGNORECASE)
+    # Match 'True', 'False', or 'Uncertain' near the end, even with markdown or punctuation
+    match = re.search(r'(True|False|Uncertain)\s*(\*\*)?[\.!\s]*$', output.strip(), re.IGNORECASE)
     if match:
         final = match.group(1).capitalize()
         print(f"Extracted Answer: {final}")
@@ -205,22 +207,40 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
 
     advantages = [(a - mean_adv) / std_adv for a in advantages]
 
-    # Step 5: Safe GRPO loss with detached logprobs
-    loss = torch.tensor(0.0, dtype=torch.float32, requires_grad=True)
-    for i in range(n_children):
-        temp_logprob = children[i].temperature_logprob
-        remask_logprob = children[i].remasking_logprob
+    # Step 5: Safe GRPO loss with recomputed logprobs
+    losses = []
 
-        # Defensive: skip if logprobs are missing or broken
-        if temp_logprob is None or remask_logprob is None:
-            print(f"Child {i} has missing logprobs. Skipping...")
+    for i in range(n_children):
+        try:
+            logits_temp = children[i].state.temperature_logits
+            idx_temp = int(children[i].state.sampled_temperature_index)
+            if isinstance(idx_temp, torch.Tensor):
+                idx_temp = idx_temp.item()  # convert to int
+
+            temp_logprobs = torch.log_softmax(logits_temp, dim=-1)
+            temp_logprob = temp_logprobs[idx_temp]  # scalar
+
+            logits_remask = children[i].state.remasking_logits
+            idx_remask = int(children[i].state.sampled_remasking_index)
+            if isinstance(idx_remask, torch.Tensor):
+                idx_remask = idx_remask.item()  # convert to int
+
+            remask_logprobs = torch.log_softmax(logits_remask, dim=-1)
+            remask_logprob = remask_logprobs[idx_remask]  # scalar
+
+            total_logprob = temp_logprob + remask_logprob
+            loss_term = -advantages[i] * total_logprob
+            losses.append(loss_term)
+
+        except Exception as e:
+            print(f"Child {i}: skipping due to logprob error: {e}")
             continue
 
-        total_logprob = temp_logprob + remask_logprob
-        loss = loss - (advantages[i] * total_logprob)
-
+    # Backprop if at least one child contributed
+    if losses:
+        total_loss = torch.stack(losses).sum()
         optimizer.zero_grad()
-        loss.backward()
+        total_loss.backward()
         optimizer.step()
 
     # Step 6: Propagate value upward

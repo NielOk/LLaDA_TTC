@@ -21,7 +21,6 @@ DECODING_POLICY_NAME="./decoding_policy_state.py"
 DECODING_UTILS_NAME="./policy_based_decoding_utils.py"
 MCTS_NODE_NAME="./mcts_node.py"
 MCTS_UTILS_NAME="./grpo_embedded_mcts_utils.py"
-echo "Copying inference script to remote instance..."
 
 read -p "Would you like to copy the inference scripts to the remote instance? (y/n): " copy_script
 if [[ $copy_script == "y" ]]; then
