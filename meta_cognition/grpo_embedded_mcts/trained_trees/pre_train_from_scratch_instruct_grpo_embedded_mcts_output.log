@@ -1,0 +1,728 @@
+started model loading...
+2025-05-22 03:15:42.206048: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-05-22 03:15:42.220288: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1747883742.236817    8070 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1747883742.242186    8070 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-05-22 03:15:42.258910: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 188.09it/s]
+Model loaded successfully.
+Sampled question 1 of 1
+Training tree from scratch...
+=== EXPANDING NODE WITH GRPO PRETRAINING ===
+Parent step_id = 0, block_id = 0
+=== Phase 1: Multiple GRPO groups ===
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.2, 0.1]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'low_confidence']), block schedule ([53, 71, 2, 2]), extra step proportions ([0.49, 0.26, 0.22, 0.03])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we cannot definitively conclude whether Inception is a folk song or not based on the given facts.
+
+Given this information, the conclusion "Inception is not a folk song" is not logically entailed by the facts because there isn't enough information to support it.
+
+Final answer: Uncertain
+Extracted Answer: Uncertain
+Child 0, Prompt 0: Reward = 7, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.0, 0.0, 0.2, 0.2]), remasking strategy schedule (['low_confidence', 'low_confidence', 'low_confidence', 'low_confidence']), block schedule ([75, 32, 18, 3]), extra step proportions ([0.43, 0.45, 0.11, 0.01])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we cannot definitively conclude that Inception is not a folk song based on the given facts.
+
+So, the conclusion "Inception is not a folk song" is not logically entailed by the given facts.
+
+Uncertain
+Extracted Answer: Uncertain
+Child 1, Prompt 0: Reward = 7, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.0, 0.1, 0.2, 0.2]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([36, 68, 9, 15]), extra step proportions ([0.42, 0.35, 0.07, 0.16])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. No songs are visuals.
+2. All videos are visuals.
+3. All movies are videos.
+4. All sci-fi movies are movies.
+5. Inception is a sci-fi movie.
+6. Mac is neither a folk song nor a sci-fi movie.
+
+We need to evaluate the conclusion: "Inception is not a folk song."
+
+Given the facts, Inception is a sci-fi movie, which is a type of movie, not a folk song. Therefore, the conclusion is true.
+
+True
+Extracted Answer: True
+Child 2, Prompt 0: Reward = 11, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.2, 0.2, 0.1]), remasking strategy schedule (['random', 'low_confidence', 'random', 'low_confidence']), block schedule ([48, 53, 17, 10]), extra step proportions ([0.24, 0.33, 0.26, 0.17])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Let's break down the facts step by step:
+
+1. We know that no songs are visuals.
+2. All movies are videos.
+3. All videos are visuals.
+4. All sci-fi movies are movies.
+5. Inception is a sci-fi movie.
+
+From these facts, we can deduce that Inception is a movie, a video, and a visual. However, we don't have any information about Inception being a folk song. Therefore, the conclusion "Inception is not a folk song" is not logically entailed by the given facts.
+
+Final answer: False
+Extracted Answer: False
+Child 3, Prompt 0: Reward = 10, Prediction = False
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.0, 0.2, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'random']), block schedule ([49, 35, 33, 11]), extra step proportions ([0.8, 0.17, 0.02, 0.01])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we can't determine if Inception is a folk song based on the given facts.
+
+Given this information, we can conclude that the statement is uncertain as it is is Inception is not a folk song, but not necessarily a song.
+
+So, the final answer is:
+Uncertain
+Extracted Answer: Uncertain
+Child 4, Prompt 0: Reward = 6, Prediction = Uncertain
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'random']), block schedule ([112, 14, 1, 1]), extra step proportions ([0.93, 0.04, 0.0, 0.03])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we can't determine if Inception is a folk song based on the given facts.
+
+Given this information, the conclusion "Inception is not a folk song" is not logically entailed by the facts provided.
+
+So, the final answer is:
+
+Uncertain
+Extracted Answer: Uncertain
+Child 0, Prompt 0: Reward = 6, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.2, 0.2]), remasking strategy schedule (['random', 'random', 'random', 'random']), block schedule ([76, 2, 2, 48]), extra step proportions ([0.33, 0.43, 0.23, 0.01])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's analyze this:
+
+1. No songs are visuals.
+2. All folk songs are songs.
+3. Inception is a movie.
+4. All movies are videos.
+5. Inception is a sci-fi movie.
+6. All sci-fi movies are movies.
+7. All videos are visuals.
+
+Now, let's consider the conclusion: "Inception is not a song song."
+
+Since it is a song song it is not a is a is a song it is
+ that the the answer is
+
+
+
+
+
+False
+
+
+.
+Extracted Answer: False
+Child 1, Prompt 0: Reward = 12, Prediction = False
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.0, 0.0, 0.2, 0.2]), remasking strategy schedule (['low_confidence', 'random', 'low_confidence', 'random']), block schedule ([99, 24, 4, 1]), extra step proportions ([0.88, 0.01, 0.11, 0.0])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we cannot definitively conclude that Inception is not a folk song based on the given facts.
+
+So, the conclusion "Inception is not a folk song" is not logically entailed by the given facts.
+
+ answer: 
+Uncertain
+
+
+The final answer is: Uncertain
+Extracted Answer: Uncertain
+Child 2, Prompt 0: Reward = 6, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.0, 0.1]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([29, 47, 50, 2]), extra step proportions ([0.47, 0.37, 0.15, 0.01])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Alright, let's think through this step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs, but not all movies can be folk songs.
+3. If Inception is a sci-fi movie, then it is not a folk song.
+4. Therefore, Inception is not a folk song.
+
+True
+Extracted Answer: True
+Child 3, Prompt 0: Reward = 6, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.1, 0.0]), remasking strategy schedule (['random', 'random', 'random', 'random']), block schedule ([109, 6, 6, 7]), extra step proportions ([0.64, 0.11, 0.1, 0.15])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Let's analyze the facts step by step: 
+
+1. No songs are considered visuals. 
+2. All folk songs are songs. 
+3. All videos are visuals. 
+4. All movies are videos. 
+5. All sci-fi movies are also movies. 
+6. Inception is a sci-fi movie.
+7. Mac is not a folk song or sci-fi movie.
+
+We need to figure out if the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+So, the final answer is:
+
+True.
+Extracted Answer: True
+Child 4, Prompt 0: Reward = 11, Prediction = True
+=== Phase 2: Final child sampling from improved logits ===
+[LOG] Expanded 2 children at node: MCTSNode(steps=0, value=-0.00, visits=10)
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.1, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'low_confidence']), block schedule ([21, 93, 3, 11]), extra step proportions ([0.59, 0.09, 0.0, 0.32])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. All sci-fi movies are movies.
+3. All movies are videos.
+4. All videos are visuals.
+5. No songs are visuals.
+
+Given these facts, we can deduce that Inception is a movie, movie, video, and, therefore, a visual. Since all songs are visuals are false, Inception cannot be a a folk song.
+
+So, the conclusion "Inception is song" is logically entailed.
+
+True
+Extracted Answer: True
+Child 0, Prompt 0: Reward = 10, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.0, 0.1, 0.1]), remasking strategy schedule (['random', 'low_confidence', 'random', 'random']), block schedule ([18, 26, 1, 83]), extra step proportions ([0.31, 0.31, 0.0, 0.38])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. No songs are visuals.
+2. All folk songs are songs.
+3. All videos are visuals.
+4. All movies are videos
+5. All sci-fi movies are movies.
+6. Inception is a sci-fi movie.
+7. Mac is neither a folk song nor a sci-fi movie.
+
+Given these facts, the conclusion "Inception is not a folk song" is logically entailed by the fact that Inception is a sci-fi movie and that all folk songs are songs.
+
+Final answer: True
+Extracted Answer: True
+Child 1, Prompt 0: Reward = 12, Prediction = True
+=== EXPANDING NODE WITH GRPO PRETRAINING ===
+Parent step_id = 1, block_id = 1
+=== Phase 1: Multiple GRPO groups ===
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.2, 0.2]), remasking strategy schedule (['random', 'random', 'random', 'low_confidence']), block schedule ([18, 57, 44, 9]), extra step proportions ([0.31, 0.64, 0.03, 0.02])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. Additionally, we know that all sci-fi movies are movies.
+
+Given that Inception is a sci-fi movie, then it must also be a folk song because all folk songs are songs. Since all songs are movies, by fact 3, Inception is a folk song. Therefore, the conclusion "In is not a folk song" is not logically entailed by the given facts.
+
+Final answer: False
+Extracted Answer: False
+Child 0, Prompt 0: Reward = 6, Prediction = False
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.2, 0.2, 0.1]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([18, 17, 52, 41]), extra step proportions ([0.31, 0.17, 0.38, 0.14])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Yes, the conclusion "Inception is not a folk song" is logically entailed by the given facts. Here's the step-by-step reasoning:
+
+1. All sci-fi movies are movies.
+2. Inception is a sci-fi movie.
+3. All folk songs are songs.
+4. No songs are visuals.
+5. All videos are visuals.
+6. All movies are videos.
+
+Since Inception is a sci-fi movie and all folk songs are songs, it follows that no folk songs are movies. Therefore, Inception is not a folk song.
+
+Final answer: True
+Extracted Answer: True
+Child 1, Prompt 0: Reward = 10, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.0, 0.2, 0.1]), remasking strategy schedule (['random', 'random', 'random', 'random']), block schedule ([18, 96, 6, 8]), extra step proportions ([0.31, 0.55, 0.14, 0.0])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: Alright, let's break it down step by step.
+
+1. We know that no songs are visuals.
+2. All folk songs are songs.
+3. All videos are visuals.
+4. All movies are videos.
+5. Inception is a sci-fi movie.
+6. We know that a folk song is a song, and Inception is a sci-fi movie.
+7. Therefore, Inception can't be a folk song.
+
+Given these facts, we can logically conclude that "Inception is not a folk song."
+
+So, the
+No valid answer extracted from the output.
+Child 2, Prompt 0: Reward = 11, Prediction = None
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.2, 0.1]), remasking strategy schedule (['random', 'random', 'random', 'low_confidence']), block schedule ([18, 79, 30, 1]), extra step proportions ([0.31, 0.61, 0.07, 0.01])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Let's break down the facts step by step:
+
+1. All folk songs are songs.
+2. No songs are visuals.
+3. All videos are visuals.
+4. All movies are videos.
+5. All sci-fi movies are movies.
+6. Inception is a sci-fi movie.
+7. Mac is not a folk song.
+
+Given these facts, we can deduce the following information:
+
+- Since Inception is not a folk song, and Mac is a folk song, it logically follows that Inception is not a folk song.
+
+The answer is: True
+Extracted Answer: True
+Child 3, Prompt 0: Reward = 3, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.0, 0.2, 0.1]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([18, 31, 44, 35]), extra step proportions ([0.31, 0.49, 0.08, 0.12])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Alright, let's think this through:
+
+1. The facts state that all sci-fi movies are movies.
+2. Inception is also a sci-fi movie.
+3. We know that all folk songs are songs.
+4. No, we also are told that Inception is a folk song.
+
+So, based on the facts, the conclusion "Inception is not a folk song" is not logically entailed. In fact, it's the opposite of the facts: Inception is a folk song.
+
+This is a contradiction. Therefore, the final answer is:
+
+
+False.
+Extracted Answer: False
+Child 4, Prompt 0: Reward = 8, Prediction = False
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.1, 0.2]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([18, 37, 12, 61]), extra step proportions ([0.31, 0.12, 0.33, 0.24])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break this down step by step.
+
+1. We know that all folk songs are songs. Check.
+
+2. We know that all sci-fi movies are movies. Check.
+
+3. Inception is a sci-fi movie. Check.
+
+4. Mac is neither a folk song nor a sci-fi movie. Check.
+
+Given these facts, since Inception is a sci-fi movie and is not a folk song, the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+So, the final answer is:
+
+True
+Extracted Answer: True
+Child 0, Prompt 0: Reward = 8, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.0, 0.1]), remasking strategy schedule (['random', 'random', 'random', 'low_confidence']), block schedule ([18, 19, 62, 29]), extra step proportions ([0.31, 0.24, 0.21, 0.24])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: To determine if "Inception is not a folk song" is logically entailed by the given facts, let's analyze them step by step:
+
+1. Inception is a sci-fi movie.
+2. All sci-fi movies are movies.
+3. All folk songs are types of songs.
+
+Since Inception is a sci-fi movie, it logically follows that Inception cannot be a folk song, as all sci-fi movies are movies, not folk songs.
+
+Therefore, the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+Final answer: True.
+Extracted Answer: True
+Child 1, Prompt 0: Reward = 6, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.0, 0.1, 0.2]), remasking strategy schedule (['random', 'low_confidence', 'low_confidence', 'random']), block schedule ([18, 108, 1, 1]), extra step proportions ([0.31, 0.07, 0.16, 0.46])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: To answer this question, let's break down the given facts:
+
+1. No songs are visuals.
+2. All folk songs are songs.
+3. All videos are visuals.
+4. All movies are videos.
+5. All sci-fi movies are movies.
+6. Inception is a sci-fi movie.
+7. Mac is neither a folk song nor a sci-fi movie.
+
+Given these facts facts, we can conclude that In conclusionception, being a sci-fi movie, would logically not be a folk song. Therefore, the answer is True.
+
+ answer answer is:.
+No valid answer extracted from the output.
+Child 2, Prompt 0: Reward = 10, Prediction = None
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.1, 0.1]), remasking strategy schedule (['random', 'random', 'low_confidence', 'random']), block schedule ([18, 88, 8, 14]), extra step proportions ([0.31, 0.44, 0.08, 0.17])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Let's analyze the facts step by step:
+
+1. All folk songs are songs.
+2. All videos are visuals.
+3. All movies are videos.
+4. All sci-fi movies are movies. 
+5. Inception is a sci-fi movie.
+
+From these facts, we know:
+- All sci-fi movies are movies.
+- Inception is a sci-fi movie.
+
+It follows that Inception is not a folk song.
+
+Therefore, the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+Answer: True
+Extracted Answer: True
+Child 3, Prompt 0: Reward = 9, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.1, 0.0]), remasking strategy schedule (['random', 'low_confidence', 'low_confidence', 'random']), block schedule ([18, 43, 6, 61]), extra step proportions ([0.31, 0.31, 0.13, 0.25])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Alright, let's break this down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a folk song or not.
+
+Given these facts, we cannot definitively conclude whether Inception is a folk song or not based solely on the information provided. Therefore, the conclusion is that a "Inception is not a folk song" is not logically entailed by the given facts.
+
+So, the final answer is: **Uncertain**
+Extracted Answer: Uncertain
+Child 4, Prompt 0: Reward = 6, Prediction = Uncertain
+=== Phase 2: Final child sampling from improved logits ===
+[LOG] Expanded 2 children at node: MCTSNode(steps=1, value=1.00, visits=11)
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.2, 0.0, 0.2]), remasking strategy schedule (['random', 'low_confidence', 'low_confidence', 'low_confidence']), block schedule ([18, 102, 5, 3]), extra step proportions ([0.31, 0.12, 0.17, 0.4])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Sure, let's break it down step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. All sci-fi movies are movies.
+3. All movies are videos.
+4. All videos are visuals.
+5. No songs are visuals.
+6. All folk songs are songs.
+
+Given these facts, we can deduce that In-ception is being a sci-fi movie, a movie, a video, a visual, and not a song. Since all folk songs are songs, Inception cannot be a folk song.
+
+The final answer is: True
+Extracted Answer: True
+Child 0, Prompt 0: Reward = 11, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.1, 0.1, 0.1, 0.0]), remasking strategy schedule (['random', 'random', 'random', 'random']), block schedule ([18, 75, 17, 18]), extra step proportions ([0.31, 0.33, 0.16, 0.2])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Sure, let's break it down step by step:
+
+1. We know that all sci-fi movies are movies.
+2. We know that Inception is a sci-fi movie.
+3. We also know that all folk songs are songs.
+4. Now, we need to determine if "Inception is not a folk song."
+
+From the given facts, we can conclude that Inception is a sci-fi movie and that all folk songs are songs. Therefore, Inception cannot be a folk song because it is a sci-fi movie.
+
+So, the final answer is: **True**
+Extracted Answer: True
+Child 1, Prompt 0: Reward = 6, Prediction = True
+=== EXPANDING NODE WITH GRPO PRETRAINING ===
+Parent step_id = 1, block_id = 1
+=== Phase 1: Multiple GRPO groups ===
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'random', 'random', 'low_confidence']), block schedule ([21, 86, 20, 1]), extra step proportions ([0.59, 0.09, 0.31, 0.01])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. Since all movies are videos, all sci-fi movies are movies.
+3. We are told that all songs are folk songs.
+4. All folk songs are songs, and all sci-fi movies are movies.
+5. Since Inception is a sci-fi movie, it cannot be a folk song.
+
+Based on these facts, the only logical conclusion is that Inception is not a folk song.
+
+So, the final answer is:
+
+**True**
+Extracted Answer: True
+Child 0, Prompt 0: Reward = 9, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.1, 0.1]), remasking strategy schedule (['low_confidence', 'random', 'random', 'low_confidence']), block schedule ([21, 44, 57, 6]), extra step proportions ([0.59, 0.38, 0.01, 0.02])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. According to the given facts, all folk songs are songs.
+3. Since Inception is a sci-fi movie, it is also a type of movie.
+4. However, there is no direct information given about Inception being a folk song..
+
+., by the, is is, a folk song.
+
+., facts, the the, In, is is not, is not logically, the the.
+
+The final answer is: Uncertain
+Extracted Answer: Uncertain
+Child 1, Prompt 0: Reward = 6, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.0, 0.1]), remasking strategy schedule (['low_confidence', 'random', 'random', 'random']), block schedule ([21, 71, 33, 3]), extra step proportions ([0.59, 0.08, 0.05, 0.28])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie. 
+2. All sci-fi movies are movies and are videos. 
+3. All folk songs are songs, and we also know that Inception is a movie. 
+4. Since we know what folk songs are and Inception is a movie, then we can conclude that Inception is not a folk song. 
+
+So, based on the given facts, the conclusion "Inception is not a folk song" is logically entailed. 
+
+The answer is: True
+Extracted Answer: True
+Child 2, Prompt 0: Reward = 7, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'random', 'low_confidence', 'random']), block schedule ([21, 16, 20, 71]), extra step proportions ([0.59, 0.24, 0.16, 0.01])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. All sci-fi movies are movies.
+3. All movies are videos.
+4. All videos are visuals.
+5. No songs are visuals.
+6. All folk songs are songs.
+
+Given that Inception is a sci-fi movie, is is, is a folk song, is is, a folk song is, a, is, is, is,
+Inception is not a folk song,, is is.
+
+Final answer:
+True.
+Extracted Answer: True
+Child 3, Prompt 0: Reward = 11, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.0, 0.0]), remasking strategy schedule (['low_confidence', 'low_confidence', 'low_confidence', 'random']), block schedule ([21, 64, 22, 21]), extra step proportions ([0.59, 0.36, 0.03, 0.02])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a song or not.
+4. Therefore, we cannot definitively conclude that Inception is not a folk song based on the given facts.
+
+So, logically, the conclusion "Inception is not a folk song" is not entailed by the given facts. We need more information to determine.
+
+**Final answer:** **Uncertain**
+Extracted Answer: Uncertain
+Child 4, Prompt 0: Reward = 7, Prediction = Uncertain
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.2, 0.0]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'random']), block schedule ([21, 7, 38, 62]), extra step proportions ([0.59, 0.24, 0.1, 0.07])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all sci-fi movies are movies.
+3. All, including movies, movies are videos.
+4. All, including videos which are movies are visuals.
+5. We know that no songs are visuals.
+6. All folk songs are songs.
+
+Given these facts, since all folk songs are songs and cannot be visuals. Inception, however, is a sci-fi movie, it is not a folk song.
+
+Final answer: True
+Extracted Answer: True
+Child 0, Prompt 0: Reward = 11, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.1, 0.1, 0.0]), remasking strategy schedule (['low_confidence', 'low_confidence', 'random', 'random']), block schedule ([21, 27, 14, 66]), extra step proportions ([0.59, 0.22, 0.12, 0.07])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's break it down step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. However, we don't have any information about whether Inception is a folk song or not.
+4. Based on the given facts, we can't logically conclude if Inception is a folk song or not.
+
+So, based on the information provided, the conclusion "Inception is not a folk song" is uncertain or logically entailed by the the facts.
+
+The final answer is: Uncertain.
+Extracted Answer: Uncertain
+Child 1, Prompt 0: Reward = 7, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.2, 0.2, 0.1]), remasking strategy schedule (['low_confidence', 'random', 'low_confidence', 'random']), block schedule ([21, 30, 22, 55]), extra step proportions ([0.59, 0.39, 0.0, 0.02])
+Child 2, Prompt 0: Evaluating...
+Child 2, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. According to the facts, all sci-fi movies are movies.
+3. Since all movies are videos, In5. And since Inception is known to be a movie is, it is unlikely that it is a folk song specifically.
+
+Therefore, the conclusion "Inception is not a folk song" is logically entailed by the facts.
+
+
+
+True.
+Extracted Answer: True
+Child 2, Prompt 0: Reward = 8, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.2, 0.1]), remasking strategy schedule (['low_confidence', 'random', 'low_confidence', 'random']), block schedule ([21, 73, 22, 12]), extra step proportions ([0.59, 0.36, 0.02, 0.03])
+Child 3, Prompt 0: Evaluating...
+Child 3, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. All sci-fi movies are also movies.
+3. All folk songs are also songs.
+4. Therefore, being a sci-fi movie, Inception cannot be a folk song.
+
+Now, the conclusion is: "Inception is not a folk song."
+
+Based on the facts, Inception is a sci-fi movie, which means it cannot be a folk song. Therefore, the conclusion is logically logically entailed by the given facts.
+
+Final answer: True
+Extracted Answer: True
+Child 3, Prompt 0: Reward = 6, Prediction = True
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.1, 0.0, 0.0]), remasking strategy schedule (['low_confidence', 'random', 'random', 'random']), block schedule ([21, 4, 82, 21]), extra step proportions ([0.59, 0.1, 0.08, 0.23])
+Child 4, Prompt 0: Evaluating...
+Child 4, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We don't know what folk songs are.
+3. We know that all folk songs are songs.
+4. No songs are visuals.
+5. We know that all movies are videos.
+6. All movies are visuals.
+
+Given these facts, we know that Inception is a sci-fi movie, which is a type of movie. Therefore,, the conclusion "Inception is not a folk song" can be logically entailed.
+
+Final answer: True
+Extracted Answer: True
+Child 4, Prompt 0: Reward = 9, Prediction = True
+=== Phase 2: Final child sampling from improved logits ===
+[LOG] Expanded 2 children at node: MCTSNode(steps=1, value=-1.00, visits=11)
+=== GRPO Update ===
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.0, 0.1, 0.2]), remasking strategy schedule (['low_confidence', 'random', 'random', 'low_confidence']), block schedule ([21, 50, 44, 13]), extra step proportions ([0.59, 0.31, 0.02, 0.08])
+Child 0, Prompt 0: Evaluating...
+Child 0, Prompt 0: Decoded output: Alright, let's break it down step by step.
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all songs are visuals.
+3. We know that not all songs are visuals, but folk songs are songs.
+4. However, we can't conclude that Mac is neither a folk song nor a sci-fi movie based on the given facts about visuals and songs.
+   
+Based on the given facts and logical reasoning, the answer is that we can't conclude "Inception is not a folk song."
+
+The final answer is: Uncertain.
+Extracted Answer: Uncertain
+Child 0, Prompt 0: Reward = 8, Prediction = Uncertain
+=== ROLLING OUT POLICY ===
+Finished rollout
+Rolled out policy: temperature schedule ([0.2, 0.1, 0.2, 0.2]), remasking strategy schedule (['low_confidence', 'random', 'low_confidence', 'random']), block schedule ([21, 12, 74, 21]), extra step proportions ([0.59, 0.28, 0.04, 0.09])
+Child 1, Prompt 0: Evaluating...
+Child 1, Prompt 0: Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. All folk songs are songs.
+3. All videos are visuals.
+4. All movies are videos.
+5. All sci-fi movies are movies.
+6Given No songs are visuals, we know songs are not videos, and all songs are are not..
+
+Since, facts facts facts, is a song, Inception is a a song song song song song song song song song song song song song song song song 
+
+The final answer is: False
+Extracted Answer: False
+Child 1, Prompt 0: Reward = 11, Prediction = False
+Saved metadata to test_time_grpo_embedded_mcts_metadata_0.json
+Saved tree to test_time_grpo_embedded_mcts_tree_snapshot_0.json
+Prompt: The following facts are given: No songs are visuals. 
+All folk songs are songs. 
+All videos are visuals. 
+All movies are videos.
+All sci-fi movies are movies.
+Inception is a sci-fi movie.
+Mac is neither a folk song nor a sci-fi movie.. Is the conclusion "Inception is not a folk song." logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself as your final answer: False, Uncertain, or True
+Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. Since, are are told that Inception is indeed a a sci-fi movie, which is a type of movie, and movies are a type of video. And.
+4. that all folk songs are songs, we can conclude that Inception is not a folk song.
+
+So, the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+Final answer: True
+Label: True
+Extracted Answer: True
+Reward: 6
+Decoded output: Alright, let's break it down step by step:
+
+1. We know that Inception is a sci-fi movie.
+2. We also know that all folk songs are songs.
+3. Since, are are told that Inception is indeed a a sci-fi movie, which is a type of movie, and movies are a type of video. And.
+4. that all folk songs are songs, we can conclude that Inception is not a folk song.
+
+So, the conclusion "Inception is not a folk song" is logically entailed by the given facts.
+
+Final answer: True
+Prediction: True
+Label: True
+Reward: 6

@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "description": "Top policies and metadata from GRPO-embedded MCTS over decoding policies pretraining",
+    "model_name": "GSAI-ML/LLaDA-8B-Instruct",
+    "num_questions_sampled_for_testing": 1,
+    "folio_test_dataset_prompts": [
+      "The following facts are given: No songs are visuals. \nAll folk songs are songs. \nAll videos are visuals. \nAll movies are videos.\nAll sci-fi movies are movies.\nInception is a sci-fi movie.\nMac is neither a folk song nor a sci-fi movie.. Is the conclusion \"Inception is not a folk song.\" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself as your final answer: False, Uncertain, or True"
+    ],
+    "folio_test_dataset_labels": [
+      "True"
+    ],
+    "steps": 256,
+    "iters": 3,
+    "branching_factor": 2,
+    "top_k": 3,
+    "num_phase1_groups": 2,
+    "rollouts_per_group": 5,
+    "possible_temperatures": [
+      0.1,
+      0.0,
+      0.2
+    ],
+    "possible_remasking_strategies": [
+      "low_confidence",
+      "random"
+    ],
+    "gen_length": 128,
+    "max_num_blocks": 4
+  },
+  "test_time_policy_0": {
+    "temperature_schedule": [
+      0.2,
+      0.1,
+      0.2,
+      0.2
+    ],
+    "remasking_strategy_schedule": [
+      "low_confidence",
+      "random",
+      "low_confidence",
+      "random"
+    ],
+    "block_schedule": [
+      21,
+      12,
+      74,
+      21
+    ],
+    "extra_step_proportions": [
+      0.59,
+      0.28,
+      0.04,
+      0.09
+    ]
+  },
+  "test_time_policy_1": {
+    "temperature_schedule": [
+      0.1,
+      0.2,
+      0.0,
+      0.2
+    ],
+    "remasking_strategy_schedule": [
+      "random",
+      "low_confidence",
+      "low_confidence",
+      "low_confidence"
+    ],
+    "block_schedule": [
+      18,
+      102,
+      5,
+      3
+    ],
+    "extra_step_proportions": [
+      0.31,
+      0.12,
+      0.17,
+      0.4
+    ]
+  },
+  "test_time_policy_2": {
+    "temperature_schedule": [
+      0.2,
+      0.0,
+      0.1,
+      0.2
+    ],
+    "remasking_strategy_schedule": [
+      "low_confidence",
+      "random",
+      "random",
+      "low_confidence"
+    ],
+    "block_schedule": [
+      21,
+      50,
+      44,
+      13
+    ],
+    "extra_step_proportions": [
+      0.59,
+      0.31,
+      0.02,
+      0.08
+    ]
+  }
+}
