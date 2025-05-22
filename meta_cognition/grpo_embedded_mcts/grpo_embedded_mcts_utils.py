@@ -219,6 +219,10 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         total_logprob = temp_logprob + remask_logprob
         loss = loss - (advantages[i] * total_logprob)
 
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
     # Step 6: Propagate value upward
     for i, child in enumerate(children):
         node = child
