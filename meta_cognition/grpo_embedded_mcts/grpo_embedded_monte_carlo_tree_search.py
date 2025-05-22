@@ -132,7 +132,6 @@ def evaluate_policy(model, tokenizer, prompt, label, policy, steps, **sampling_k
     output = generate_with_decoding_policy(model, prompt, policy, steps=steps, gen_length=sampling_kwargs['gen_length'])
     decoded_output = tokenizer.batch_decode(output[:, prompt.shape[1]:], skip_special_tokens=True)[0]
 
-    print(f"Prompt: {prompt}")
     print(f"Decoded output: {decoded_output}")
     print(f"Label: {label}")
     total_reward, prediction = compute_reward(prompt, decoded_output)
@@ -211,6 +210,7 @@ def main():
             tree = json.load(f)
         prompt = metadata['metadata']['folio_test_dataset_prompts'][0]
         label = metadata['metadata']['folio_test_dataset_labels'][0]
+        print(f"Prompt: {prompt}")
         prompt = convert_prompts_to_input_ids([prompt], tokenizer, device)[0]
         top_policy = DecodingPolicyState(
             possible_temperatures=metadata['metadata']['possible_temperatures'],
