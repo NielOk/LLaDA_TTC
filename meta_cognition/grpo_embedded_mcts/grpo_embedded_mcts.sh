@@ -55,8 +55,8 @@ GRPO_EMBEDDED_MCTS_PRETRAINED_TREE_METADATA_JSON_NAME="pre_training_grpo_embedde
 read -p "Would you like to run the GRPO-embedded MCTS script on the remote instance? (y/n): " run_mode
 if [[ $run_mode == "y" ]]; then # pre-training from scratch
 
-    echo "Running GRPO-embedded MCTS script for pre-training from scratch on remote instance for model variant: Instruct..."
-    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT > pre_train_from_scratch_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
+    echo "Running GRPO-embedded MCTS script for test-time RL on remote instance for model variant: Instruct..."
+    ssh -i "$private_ssh_key" "$remote_ssh_user@$remote_ssh_host" "nohup python3 -u ~/$GRPO_EMBEDDED_MCTS_SCRIPT > test_time_rl_instruct_grpo_embedded_mcts_output.log 2>&1 &" &
 else
     echo "Skipping GRPO-embedded MCTS script execution."
 fi
