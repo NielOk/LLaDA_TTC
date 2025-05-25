@@ -104,18 +104,24 @@ def expand_node_with_pretraining(
     return final_children
 
 
-# === Rollout ===
 def rollout_policy(policy_state, steps, **sampling_kwargs):
     print("=== ROLLING OUT POLICY ===")
     state = clone_decoding_policy_state(policy_state)
-    while state.step_id < steps:
+
+    while state.step_id < steps and state.block_id < sampling_kwargs["max_num_blocks"]:
         state.sample_partial_decoding_policy(
             steps=steps,
             gen_length=sampling_kwargs["gen_length"],
             max_num_blocks=sampling_kwargs["max_num_blocks"]
         )
-    print(f"Finished rollout")
-    print(f"Rolled out policy: temperature schedule ({state.temperature_schedule}), remasking strategy schedule ({state.remasking_strategy_schedule}), block schedule ({state.block_schedule}), extra step proportions ({state.extra_step_proportions})")
+
+    print("Finished rollout")
+    print(f"Rolled out policy:")
+    print(f"  temperature schedule: {state.temperature_schedule}")
+    print(f"  remasking strategy schedule: {state.remasking_strategy_schedule}")
+    print(f"  block schedule: {state.block_schedule}")
+    print(f"  extra step proportions: {state.extra_step_proportions}")
+
     return state
 
 
