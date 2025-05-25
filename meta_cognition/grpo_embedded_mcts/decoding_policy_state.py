@@ -30,43 +30,48 @@ class DecodingPolicyState():
 
     def sample_partial_decoding_policy(self, steps=128, gen_length=128, max_num_blocks=4):
         """
-        Sample a partial decoding policy from learnable logits.
-        Updates self.*_schedule and tracks block/step information.
+        Sample one full decoding block: temperature, remasking strategy, block length, and extra step proportion.
+        Advances step_id by the block length (not one step at a time).
+        Appends sampled values to schedules and updates internal counters.
         """
 
-        if self.step_id > steps:
+        # Do nothing if generation is complete or max blocks reached
+        if self.step_id >= steps or self.block_id >= max_num_blocks:
             return
 
-        if self.step_id == self.block_end_step_id and self.block_id < max_num_blocks:
-            blocks_remaining = max_num_blocks - self.block_id
+        blocks_remaining = max_num_blocks - self.block_id
+        remaining_steps = gen_length - self.step_id
 
-            # === Sample block length and extra step proportion ===
-            if blocks_remaining == 1:
-                block_length = gen_length - self.step_id
-                extra_step_proportion = round(1 - sum(self.extra_step_proportions), 2)
-            else:
-                block_length = random.randint(1, gen_length - self.step_id - (blocks_remaining - 1))
-                extra_step_proportion = round(random.uniform(0, 1 - sum(self.extra_step_proportions)), 2)
+        # === Sample block length and extra step proportion ===
+        if blocks_remaining == 1:
+            block_length = remaining_steps
+            extra_step_proportion = round(1.0 - sum(self.extra_step_proportions), 2)
+        else:
+            max_length = remaining_steps - (blocks_remaining - 1)
+            block_length = random.randint(1, max_length)
+            max_extra = 1.0 - sum(self.extra_step_proportions)
+            extra_step_proportion = round(random.uniform(0, max_extra), 2)
 
-            # === Sample from learnable logits using softmax ===
-            temp_probs = F.softmax(self.temperature_logits, dim=0)
-            temperature_idx = torch.multinomial(temp_probs, 1).item()
-            temperature = self.possible_temperatures[temperature_idx]
-            self.temperature_logprob = torch.log(temp_probs[temperature_idx] + 1e-8)  # store logprob
+        # === Sample temperature ===
+        temp_probs = F.softmax(self.temperature_logits, dim=0)
+        temperature_idx = torch.multinomial(temp_probs, 1).item()
+        temperature = self.possible_temperatures[temperature_idx]
+        self.temperature_logprob = torch.log(temp_probs[temperature_idx] + 1e-8)
 
-            remask_probs = F.softmax(self.remasking_logits, dim=0)
-            remasking_idx = torch.multinomial(remask_probs, 1).item()
-            remasking_strategy = self.possible_remasking_strategies[remasking_idx]
-            self.remasking_logprob = torch.log(remask_probs[remasking_idx] + 1e-8)  # store logprob
+        # === Sample remasking strategy ===
+        remask_probs = F.softmax(self.remasking_logits, dim=0)
+        remasking_idx = torch.multinomial(remask_probs, 1).item()
+        remasking_strategy = self.possible_remasking_strategies[remasking_idx]
+        self.remasking_logprob = torch.log(remask_probs[remasking_idx] + 1e-8)
 
-            # === Update state ===
-            self.temperature_schedule.append(temperature)
-            self.remasking_strategy_schedule.append(remasking_strategy)
-            self.block_schedule.append(block_length)
-            self.extra_step_proportions.append(extra_step_proportion)
-            self.sampled_temperature_index = temperature_idx
-            self.sampled_remasking_index = remasking_idx
-            self.block_end_step_id = self.step_id + block_length
-            self.block_id += 1
+        # === Update schedules and state ===
+        self.temperature_schedule.append(temperature)
+        self.remasking_strategy_schedule.append(remasking_strategy)
+        self.block_schedule.append(block_length)
+        self.extra_step_proportions.append(extra_step_proportion)
+        self.sampled_temperature_index = temperature_idx
+        self.sampled_remasking_index = remasking_idx
 
-        self.step_id += 1
+        # === Advance step and block counters ===
+        self.step_id += block_length
+        self.block_id += 1

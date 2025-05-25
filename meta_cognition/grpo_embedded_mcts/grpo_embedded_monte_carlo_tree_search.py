@@ -153,7 +153,7 @@ def main():
 
     # Model parameters
     steps = 256
-    iters = 12
+    iters = 20
     branching_factor = 2 # number of children to sample at each node
     top_k = 3
     possible_temperatures = [0.1, 0.0, 0.2]
