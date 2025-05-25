@@ -33,7 +33,6 @@ def clone_decoding_policy_state(source_state):
     cloned.extra_step_proportions = source_state.extra_step_proportions.copy()
     cloned.step_id = source_state.step_id
     cloned.block_id = source_state.block_id
-    cloned.block_end_step_id = source_state.block_end_step_id
 
     # === Share logits and logprobs ===
     cloned.temperature_logits = source_state.temperature_logits

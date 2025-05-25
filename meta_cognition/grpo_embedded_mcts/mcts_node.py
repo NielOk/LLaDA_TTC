@@ -53,7 +53,6 @@ class MCTSNode:
                 "extra_step_proportions": self.state.extra_step_proportions,
                 "step_id": self.state.step_id,
                 "block_id": self.state.block_id,
-                "block_end_step_id": self.state.block_end_step_id
             },
             "children": [child.to_dict() for child in self.children]
         }
@@ -68,7 +67,6 @@ class MCTSNode:
         state.extra_step_proportions = dp["extra_step_proportions"]
         state.step_id = dp["step_id"]
         state.block_id = dp["block_id"]
-        state.block_end_step_id = dp["block_end_step_id"]
 
         node = MCTSNode(state=state, parent=parent)
         node.value_sum = data["value_sum"]

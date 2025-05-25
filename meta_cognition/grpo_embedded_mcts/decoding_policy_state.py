@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 class DecodingPolicyState():
 
-    def __init__(self, possible_temperatures=[0.7, 1.0], possible_remasking_strategies=["low_confidence", "random"]):
+    def __init__(self, possible_temperatures=[0.0, 0.1, 0.2], possible_remasking_strategies=["low_confidence", "random"]):
         # Options
         self.possible_temperatures = possible_temperatures
         self.possible_remasking_strategies = possible_remasking_strategies
@@ -19,7 +19,6 @@ class DecodingPolicyState():
 
         self.step_id = 0
         self.block_id = 0
-        self.block_end_step_id = 0
 
         # === Learnable logits (per decision type) ===
         self.temperature_logits = torch.nn.Parameter(torch.zeros(len(possible_temperatures)), requires_grad=True)
