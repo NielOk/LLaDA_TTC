@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Structured Metacognition via 2-Level GRPO-Embedded Monte Carlo Tree Search for Decoding Policy Optimization</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: #fcfcfc;
+      color: #2c2c2c;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-top: 2rem;
+    }
+    .authors {
+      font-size: 1rem;
+      color: #555;
+    }
+    .entry-date {
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .entry-category {
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    code {
+      background-color: #f2f2f2;
+      padding: 2px 4px;
+      font-family: monospace;
+      font-size: 0.95em;
+    }
+    .tldr-box {
+      background-color: #f9f9f9;
+      border-left: 4px solid #7c7c7c;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .tldr-box code {
+      background-color: #eee;
+      font-family: monospace;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .repo-link {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+    .repo-link a {
+      color: #0077cc;
+      text-decoration: none;
+    }
+    .repo-link a:hover {
+      text-decoration: underline;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .header a {
+      color: #0077cc;
+      text-decoration: none;
+    }
+    .header a:hover {
+      text-decoration: underline;
+    }
+    .repo-link {
+      margin-top: 0.5rem;
+      font-weight: bold;
+      display: inline-block;
+    }
+        .github-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: #000;
+      color: #fff !important; /* Force white text */
+      padding: 0.5rem 0.9rem;
+      font-size: 0.9rem;
+      border-radius: 1.5rem;
+      font-weight: bold;
+      text-decoration: none !important;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .github-button:link,
+    .github-button:visited,
+    .github-button:hover,
+    .github-button:focus,
+    .github-button:active {
+      color: #fff !important;
+      text-decoration: none !important;
+      background-color: #333;
+    }
+    .github-icon {
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Structured Metacognition via 2-Level GRPO-Embedded Monte Carlo Tree Search for Decoding Policy Optimizatio</h1>
+    <div class="authors">
+      <a href="https://nielok.github.io" target="_blank">Niel Ok</a>
+      <br />
+      <div>Stanford University · May 2025</div>
+      <a class="github-button" href="https://github.com/NielOk/LLaDA_TTC" target="_blank">
+        <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white" width="16" height="16">
+          <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 
+          0-.19-.01-.82-.01-1.49-2 .37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 
+          1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 
+          0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.11 0 0 .67-.21 2.2.82A7.59 
+          7.59 0 018 4.58c.68.003 1.37.092 2.01.27 1.53-1.04 2.2-.82 2.2-.82.44 
+          1.1.16 1.91.08 2.11.51.56.82 1.27.82 2.15 
+          0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 
+          0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 
+          8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        <span>Code</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="tldr-box">
+    <p><strong>TL;DR:</strong> We introduce a test-time inference framework—<em>GRPO-embedded Monte Carlo Tree Search (GRPO-MCTS)</em>—that enables language models to optimize how they decode, not just what they decode. Rather than relying on static decoding strategies, our approach performs structured search over blockwise inference schedules customized for each input prompt.</p>
+
+    <p>Each decoding policy is a structured program specifying temperature, remasking strategy, step allocation, and compute distribution. GRPO-MCTS explores this policy space using Monte Carlo Tree Search, while applying <strong>Group-Relative Policy Optimization (GRPO)</strong> at each node to learn reward-aligned sampling behavior. This two-level structure—search over decoding blocks and local optimization over rollouts—forms a dynamic system of <strong>structured metacognition</strong>.</p>
+
+    <p><strong>This work is the first to frame inference-time decoding as a real-time optimization problem over compositional strategies, demonstrating that language models can adapt how they think, one prompt at a time.</strong></p>
+
+    <p> We gratefully acknowledge compute support provided by researchers at DeepMind in preparation for DeepMind's Gemini Diffusion release.</p>
+  </div>
+
+
+  <iframe 
+  src="grpo_embedded_mcts_decoding_policies.pdf" 
+  style="width: 100%; height: 100vh; border: none; overflow: auto;"
+  allowfullscreen></iframe>
+
+</body>
+</html>
