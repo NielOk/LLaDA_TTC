@@ -13,7 +13,7 @@ class MCTSNode:
 
         self.branching_factor = branching_factor
 
-        # === NEW: Store logprobs from sampled decisions ===
+        # === Store logprobs from sampled decisions ===
         self.temperature_logprob = getattr(state, "temperature_logprob", torch.tensor(0.0))
         self.remasking_logprob = getattr(state, "remasking_logprob", torch.tensor(0.0))
 
