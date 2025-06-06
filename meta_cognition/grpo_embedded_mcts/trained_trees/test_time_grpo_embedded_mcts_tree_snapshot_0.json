@@ -1,6 +1,6 @@
 {
-  "value_sum": -6.661338147750939e-16,
-  "visits": 240,
+  "value_sum": 0.0,
+  "visits": 40,
   "temperature_logprob": 0.0,
   "remasking_logprob": 0.0,
   "decoding_policy": {
@@ -13,10 +13,10 @@
   },
   "children": [
     {
-      "value_sum": 1.0000000000000009,
-      "visits": 121,
-      "temperature_logprob": -0.9634236097335815,
-      "remasking_logprob": -0.9513909816741943,
+      "value_sum": 1.0,
+      "visits": 25,
+      "temperature_logprob": -1.1926883459091187,
+      "remasking_logprob": -1.058563232421875,
       "decoding_policy": {
         "temperature_schedule": [
           0.2
@@ -25,236 +25,134 @@
           "random"
         ],
         "block_schedule": [
-          106
+          37
         ],
         "extra_step_proportions": [
-          0.05
+          0.24
         ],
-        "step_id": 106,
+        "step_id": 37,
         "block_id": 1
       },
       "children": [
         {
-          "value_sum": -1.0000000000000009,
-          "visits": 49,
-          "temperature_logprob": -0.9054815769195557,
-          "remasking_logprob": -0.724490225315094,
+          "value_sum": -1.0,
+          "visits": 9,
+          "temperature_logprob": -1.0506970882415771,
+          "remasking_logprob": -0.43423551321029663,
           "decoding_policy": {
             "temperature_schedule": [
               0.2,
-              0.1
+              0.2
             ],
             "remasking_strategy_schedule": [
               "random",
-              "random"
+              "low_confidence"
             ],
             "block_schedule": [
-              106,
-              3
+              37,
+              58
             ],
             "extra_step_proportions": [
-              0.05,
-              0.01
+              0.24,
+              0.38
             ],
-            "step_id": 109,
+            "step_id": 95,
             "block_id": 2
           },
           "children": [
             {
-              "value_sum": -1.0,
-              "visits": 13,
-              "temperature_logprob": -0.9466294646263123,
-              "remasking_logprob": -0.26272857189178467,
+              "value_sum": 0.0,
+              "visits": 5,
+              "temperature_logprob": -1.0832462310791016,
+              "remasking_logprob": -0.49673396348953247,
               "decoding_policy": {
                 "temperature_schedule": [
                   0.2,
-                  0.1,
+                  0.2,
                   0.1
                 ],
                 "remasking_strategy_schedule": [
                   "random",
-                  "random",
+                  "low_confidence",
                   "low_confidence"
                 ],
                 "block_schedule": [
-                  106,
-                  3,
-                  6
+                  37,
+                  58,
+                  7
                 ],
                 "extra_step_proportions": [
-                  0.05,
-                  0.01,
-                  0.2
+                  0.24,
+                  0.38,
+                  0.19
                 ],
-                "step_id": 115,
+                "step_id": 102,
                 "block_id": 3
               },
               "children": [
                 {
                   "value_sum": 1.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.400359034538269,
-                  "remasking_logprob": -0.28895866870880127,
+                  "visits": 3,
+                  "temperature_logprob": -1.584675908088684,
+                  "remasking_logprob": -0.4476929306983948,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
-                      0.1,
-                      0.1,
-                      0.2
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "random",
-                      "low_confidence",
-                      "low_confidence"
-                    ],
-                    "block_schedule": [
-                      106,
-                      3,
-                      6,
-                      13
-                    ],
-                    "extra_step_proportions": [
-                      0.05,
-                      0.01,
                       0.2,
-                      0.74
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                },
-                {
-                  "value_sum": -1.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.2872076034545898,
-                  "remasking_logprob": -1.382474422454834,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.2,
-                      0.1,
                       0.1,
                       0.0
                     ],
                     "remasking_strategy_schedule": [
                       "random",
-                      "random",
                       "low_confidence",
-                      "random"
-                    ],
-                    "block_schedule": [
-                      106,
-                      3,
-                      6,
-                      13
-                    ],
-                    "extra_step_proportions": [
-                      0.05,
-                      0.01,
-                      0.2,
-                      0.74
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "value_sum": 1.0000000000000004,
-              "visits": 25,
-              "temperature_logprob": -0.9569991230964661,
-              "remasking_logprob": -0.26272857189178467,
-              "decoding_policy": {
-                "temperature_schedule": [
-                  0.2,
-                  0.1,
-                  0.0
-                ],
-                "remasking_strategy_schedule": [
-                  "random",
-                  "random",
-                  "low_confidence"
-                ],
-                "block_schedule": [
-                  106,
-                  3,
-                  17
-                ],
-                "extra_step_proportions": [
-                  0.05,
-                  0.01,
-                  0.82
-                ],
-                "step_id": 126,
-                "block_id": 3
-              },
-              "children": [
-                {
-                  "value_sum": 4.440892098500626e-16,
-                  "visits": 13,
-                  "temperature_logprob": -0.8829280138015747,
-                  "remasking_logprob": -0.2482806146144867,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.2,
-                      0.1,
-                      0.0,
-                      0.0
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "random",
                       "low_confidence",
                       "low_confidence"
                     ],
                     "block_schedule": [
-                      106,
-                      3,
-                      17,
-                      2
+                      37,
+                      58,
+                      7,
+                      26
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.01,
-                      0.82,
-                      0.12
+                      0.24,
+                      0.38,
+                      0.19,
+                      0.19
                     ],
                     "step_id": 128,
                     "block_id": 4
                   },
                   "children": [
                     {
-                      "value_sum": -1.0,
+                      "value_sum": 0.0,
                       "visits": 1,
-                      "temperature_logprob": -0.8829280138015747,
-                      "remasking_logprob": -0.2482806146144867,
+                      "temperature_logprob": -1.584675908088684,
+                      "remasking_logprob": -0.4476929306983948,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.2,
+                          0.2,
                           0.1,
-                          0.0,
                           0.0
                         ],
                         "remasking_strategy_schedule": [
                           "random",
-                          "random",
+                          "low_confidence",
                           "low_confidence",
                           "low_confidence"
                         ],
                         "block_schedule": [
-                          106,
-                          3,
-                          17,
-                          2
+                          37,
+                          58,
+                          7,
+                          26
                         ],
                         "extra_step_proportions": [
-                          0.05,
-                          0.01,
-                          0.82,
-                          0.12
+                          0.24,
+                          0.38,
+                          0.19,
+                          0.19
                         ],
                         "step_id": 128,
                         "block_id": 4
@@ -262,34 +160,34 @@
                       "children": []
                     },
                     {
-                      "value_sum": 1.0,
+                      "value_sum": 0.0,
                       "visits": 1,
-                      "temperature_logprob": -0.8829280138015747,
-                      "remasking_logprob": -0.2482806146144867,
+                      "temperature_logprob": -1.584675908088684,
+                      "remasking_logprob": -0.4476929306983948,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.2,
+                          0.2,
                           0.1,
-                          0.0,
                           0.0
                         ],
                         "remasking_strategy_schedule": [
                           "random",
-                          "random",
+                          "low_confidence",
                           "low_confidence",
                           "low_confidence"
                         ],
                         "block_schedule": [
-                          106,
-                          3,
-                          17,
-                          2
+                          37,
+                          58,
+                          7,
+                          26
                         ],
                         "extra_step_proportions": [
-                          0.05,
-                          0.01,
-                          0.82,
-                          0.12
+                          0.24,
+                          0.38,
+                          0.19,
+                          0.19
                         ],
                         "step_id": 128,
                         "block_id": 4
@@ -299,34 +197,136 @@
                   ]
                 },
                 {
-                  "value_sum": 0.0,
+                  "value_sum": -1.0,
                   "visits": 1,
-                  "temperature_logprob": -1.3694792985916138,
-                  "remasking_logprob": -0.2482806146144867,
+                  "temperature_logprob": -0.7525666952133179,
+                  "remasking_logprob": -0.4476929306983948,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
+                      0.2,
                       0.1,
-                      0.0,
                       0.2
                     ],
                     "remasking_strategy_schedule": [
                       "random",
-                      "random",
+                      "low_confidence",
                       "low_confidence",
                       "low_confidence"
                     ],
                     "block_schedule": [
-                      106,
-                      3,
-                      17,
-                      2
+                      37,
+                      58,
+                      7,
+                      26
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.01,
-                      0.82,
-                      0.12
+                      0.24,
+                      0.38,
+                      0.19,
+                      0.19
+                    ],
+                    "step_id": 128,
+                    "block_id": 4
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "value_sum": 0.0,
+              "visits": 3,
+              "temperature_logprob": -0.698491096496582,
+              "remasking_logprob": -0.49673396348953247,
+              "decoding_policy": {
+                "temperature_schedule": [
+                  0.2,
+                  0.2,
+                  0.2
+                ],
+                "remasking_strategy_schedule": [
+                  "random",
+                  "low_confidence",
+                  "low_confidence"
+                ],
+                "block_schedule": [
+                  37,
+                  58,
+                  26
+                ],
+                "extra_step_proportions": [
+                  0.24,
+                  0.38,
+                  0.04
+                ],
+                "step_id": 121,
+                "block_id": 3
+              },
+              "children": [
+                {
+                  "value_sum": 1.0,
+                  "visits": 1,
+                  "temperature_logprob": -0.7409949898719788,
+                  "remasking_logprob": -0.3178505301475525,
+                  "decoding_policy": {
+                    "temperature_schedule": [
+                      0.2,
+                      0.2,
+                      0.2,
+                      0.2
+                    ],
+                    "remasking_strategy_schedule": [
+                      "random",
+                      "low_confidence",
+                      "low_confidence",
+                      "low_confidence"
+                    ],
+                    "block_schedule": [
+                      37,
+                      58,
+                      26,
+                      7
+                    ],
+                    "extra_step_proportions": [
+                      0.24,
+                      0.38,
+                      0.04,
+                      0.34
+                    ],
+                    "step_id": 128,
+                    "block_id": 4
+                  },
+                  "children": []
+                },
+                {
+                  "value_sum": -1.0,
+                  "visits": 1,
+                  "temperature_logprob": -0.7409949898719788,
+                  "remasking_logprob": -0.3178505301475525,
+                  "decoding_policy": {
+                    "temperature_schedule": [
+                      0.2,
+                      0.2,
+                      0.2,
+                      0.2
+                    ],
+                    "remasking_strategy_schedule": [
+                      "random",
+                      "low_confidence",
+                      "low_confidence",
+                      "low_confidence"
+                    ],
+                    "block_schedule": [
+                      37,
+                      58,
+                      26,
+                      7
+                    ],
+                    "extra_step_proportions": [
+                      0.24,
+                      0.38,
+                      0.04,
+                      0.34
                     ],
                     "step_id": 128,
                     "block_id": 4
@@ -338,159 +338,372 @@
           ]
         },
         {
-          "value_sum": 0.9999999999999997,
-          "visits": 61,
-          "temperature_logprob": -0.9054815769195557,
-          "remasking_logprob": -0.6627567410469055,
+          "value_sum": 1.0,
+          "visits": 15,
+          "temperature_logprob": -1.1542869806289673,
+          "remasking_logprob": -1.043441653251648,
           "decoding_policy": {
             "temperature_schedule": [
               0.2,
-              0.1
+              0.0
             ],
             "remasking_strategy_schedule": [
               "random",
-              "low_confidence"
+              "random"
             ],
             "block_schedule": [
-              106,
-              11
+              37,
+              76
             ],
             "extra_step_proportions": [
-              0.05,
-              0.75
+              0.24,
+              0.65
             ],
-            "step_id": 117,
+            "step_id": 113,
             "block_id": 2
           },
           "children": [
             {
-              "value_sum": -2.220446049250313e-16,
-              "visits": 25,
-              "temperature_logprob": -1.1367247104644775,
-              "remasking_logprob": -0.4179021716117859,
+              "value_sum": 1.0,
+              "visits": 11,
+              "temperature_logprob": -0.7137598395347595,
+              "remasking_logprob": -0.3750595450401306,
               "decoding_policy": {
                 "temperature_schedule": [
                   0.2,
-                  0.1,
-                  0.0
+                  0.0,
+                  0.2
                 ],
                 "remasking_strategy_schedule": [
                   "random",
-                  "low_confidence",
+                  "random",
                   "low_confidence"
                 ],
                 "block_schedule": [
-                  106,
-                  11,
-                  9
+                  37,
+                  76,
+                  8
                 ],
                 "extra_step_proportions": [
-                  0.05,
-                  0.75,
-                  0.15
+                  0.24,
+                  0.65,
+                  0.07
                 ],
-                "step_id": 126,
+                "step_id": 121,
                 "block_id": 3
               },
               "children": [
                 {
                   "value_sum": 1.0,
-                  "visits": 13,
-                  "temperature_logprob": -0.8965526819229126,
-                  "remasking_logprob": -0.20097678899765015,
+                  "visits": 9,
+                  "temperature_logprob": -0.6251224279403687,
+                  "remasking_logprob": -0.9068942070007324,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
-                      0.1,
                       0.0,
-                      0.0
+                      0.2,
+                      0.2
                     ],
                     "remasking_strategy_schedule": [
                       "random",
+                      "random",
                       "low_confidence",
-                      "low_confidence",
-                      "low_confidence"
+                      "random"
                     ],
                     "block_schedule": [
-                      106,
-                      11,
-                      9,
-                      2
+                      37,
+                      76,
+                      8,
+                      7
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.75,
-                      0.15,
-                      0.05
+                      0.24,
+                      0.65,
+                      0.07,
+                      0.04
                     ],
                     "step_id": 128,
                     "block_id": 4
                   },
                   "children": [
                     {
-                      "value_sum": -1.0,
-                      "visits": 1,
-                      "temperature_logprob": -0.8965526819229126,
-                      "remasking_logprob": -0.20097678899765015,
+                      "value_sum": 1.0,
+                      "visits": 7,
+                      "temperature_logprob": -0.6251224279403687,
+                      "remasking_logprob": -0.9068942070007324,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.2,
-                          0.1,
                           0.0,
-                          0.0
+                          0.2,
+                          0.2
                         ],
                         "remasking_strategy_schedule": [
                           "random",
+                          "random",
                           "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
+                          "random"
                         ],
                         "block_schedule": [
-                          106,
-                          11,
-                          9,
-                          2
+                          37,
+                          76,
+                          8,
+                          7
                         ],
                         "extra_step_proportions": [
-                          0.05,
-                          0.75,
-                          0.15,
-                          0.05
+                          0.24,
+                          0.65,
+                          0.07,
+                          0.04
                         ],
                         "step_id": 128,
                         "block_id": 4
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "value_sum": 0.0,
+                          "visits": 3,
+                          "temperature_logprob": -0.6251224279403687,
+                          "remasking_logprob": -0.9068942070007324,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.2,
+                              0.0,
+                              0.2,
+                              0.2
+                            ],
+                            "remasking_strategy_schedule": [
+                              "random",
+                              "random",
+                              "low_confidence",
+                              "random"
+                            ],
+                            "block_schedule": [
+                              37,
+                              76,
+                              8,
+                              7
+                            ],
+                            "extra_step_proportions": [
+                              0.24,
+                              0.65,
+                              0.07,
+                              0.04
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": [
+                            {
+                              "value_sum": 1.0,
+                              "visits": 1,
+                              "temperature_logprob": -0.6251224279403687,
+                              "remasking_logprob": -0.9068942070007324,
+                              "decoding_policy": {
+                                "temperature_schedule": [
+                                  0.2,
+                                  0.0,
+                                  0.2,
+                                  0.2
+                                ],
+                                "remasking_strategy_schedule": [
+                                  "random",
+                                  "random",
+                                  "low_confidence",
+                                  "random"
+                                ],
+                                "block_schedule": [
+                                  37,
+                                  76,
+                                  8,
+                                  7
+                                ],
+                                "extra_step_proportions": [
+                                  0.24,
+                                  0.65,
+                                  0.07,
+                                  0.04
+                                ],
+                                "step_id": 128,
+                                "block_id": 4
+                              },
+                              "children": []
+                            },
+                            {
+                              "value_sum": -1.0,
+                              "visits": 1,
+                              "temperature_logprob": -0.6251224279403687,
+                              "remasking_logprob": -0.9068942070007324,
+                              "decoding_policy": {
+                                "temperature_schedule": [
+                                  0.2,
+                                  0.0,
+                                  0.2,
+                                  0.2
+                                ],
+                                "remasking_strategy_schedule": [
+                                  "random",
+                                  "random",
+                                  "low_confidence",
+                                  "random"
+                                ],
+                                "block_schedule": [
+                                  37,
+                                  76,
+                                  8,
+                                  7
+                                ],
+                                "extra_step_proportions": [
+                                  0.24,
+                                  0.65,
+                                  0.07,
+                                  0.04
+                                ],
+                                "step_id": 128,
+                                "block_id": 4
+                              },
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "value_sum": 0.0,
+                          "visits": 3,
+                          "temperature_logprob": -0.6251224279403687,
+                          "remasking_logprob": -0.9068942070007324,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.2,
+                              0.0,
+                              0.2,
+                              0.2
+                            ],
+                            "remasking_strategy_schedule": [
+                              "random",
+                              "random",
+                              "low_confidence",
+                              "random"
+                            ],
+                            "block_schedule": [
+                              37,
+                              76,
+                              8,
+                              7
+                            ],
+                            "extra_step_proportions": [
+                              0.24,
+                              0.65,
+                              0.07,
+                              0.04
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": [
+                            {
+                              "value_sum": 0.0,
+                              "visits": 1,
+                              "temperature_logprob": -0.6251224279403687,
+                              "remasking_logprob": -0.9068942070007324,
+                              "decoding_policy": {
+                                "temperature_schedule": [
+                                  0.2,
+                                  0.0,
+                                  0.2,
+                                  0.2
+                                ],
+                                "remasking_strategy_schedule": [
+                                  "random",
+                                  "random",
+                                  "low_confidence",
+                                  "random"
+                                ],
+                                "block_schedule": [
+                                  37,
+                                  76,
+                                  8,
+                                  7
+                                ],
+                                "extra_step_proportions": [
+                                  0.24,
+                                  0.65,
+                                  0.07,
+                                  0.04
+                                ],
+                                "step_id": 128,
+                                "block_id": 4
+                              },
+                              "children": []
+                            },
+                            {
+                              "value_sum": 0.0,
+                              "visits": 1,
+                              "temperature_logprob": -0.6251224279403687,
+                              "remasking_logprob": -0.9068942070007324,
+                              "decoding_policy": {
+                                "temperature_schedule": [
+                                  0.2,
+                                  0.0,
+                                  0.2,
+                                  0.2
+                                ],
+                                "remasking_strategy_schedule": [
+                                  "random",
+                                  "random",
+                                  "low_confidence",
+                                  "random"
+                                ],
+                                "block_schedule": [
+                                  37,
+                                  76,
+                                  8,
+                                  7
+                                ],
+                                "extra_step_proportions": [
+                                  0.24,
+                                  0.65,
+                                  0.07,
+                                  0.04
+                                ],
+                                "step_id": 128,
+                                "block_id": 4
+                              },
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
                     },
                     {
-                      "value_sum": 1.0,
+                      "value_sum": -1.0,
                       "visits": 1,
-                      "temperature_logprob": -0.8965526819229126,
-                      "remasking_logprob": -0.20097678899765015,
+                      "temperature_logprob": -0.6251224279403687,
+                      "remasking_logprob": -0.9068942070007324,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.2,
-                          0.1,
                           0.0,
-                          0.0
+                          0.2,
+                          0.2
                         ],
                         "remasking_strategy_schedule": [
                           "random",
+                          "random",
                           "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
+                          "random"
                         ],
                         "block_schedule": [
-                          106,
-                          11,
-                          9,
-                          2
+                          37,
+                          76,
+                          8,
+                          7
                         ],
                         "extra_step_proportions": [
-                          0.05,
-                          0.75,
-                          0.15,
-                          0.05
+                          0.24,
+                          0.65,
+                          0.07,
+                          0.04
                         ],
                         "step_id": 128,
                         "block_id": 4
@@ -502,32 +715,32 @@
                 {
                   "value_sum": -1.0,
                   "visits": 1,
-                  "temperature_logprob": -0.8965526819229126,
-                  "remasking_logprob": -0.20097678899765015,
+                  "temperature_logprob": -1.3512808084487915,
+                  "remasking_logprob": -0.5171394348144531,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
-                      0.1,
                       0.0,
-                      0.0
+                      0.2,
+                      0.1
                     ],
                     "remasking_strategy_schedule": [
                       "random",
-                      "low_confidence",
+                      "random",
                       "low_confidence",
                       "low_confidence"
                     ],
                     "block_schedule": [
-                      106,
-                      11,
-                      9,
-                      2
+                      37,
+                      76,
+                      8,
+                      7
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.75,
-                      0.15,
-                      0.05
+                      0.24,
+                      0.65,
+                      0.07,
+                      0.04
                     ],
                     "step_id": 128,
                     "block_id": 4
@@ -537,170 +750,99 @@
               ]
             },
             {
-              "value_sum": 0.0,
-              "visits": 25,
-              "temperature_logprob": -1.1367247104644775,
-              "remasking_logprob": -0.4179021716117859,
+              "value_sum": -1.0,
+              "visits": 3,
+              "temperature_logprob": -1.4229447841644287,
+              "remasking_logprob": -0.3750595450401306,
               "decoding_policy": {
                 "temperature_schedule": [
                   0.2,
-                  0.1,
-                  0.0
+                  0.0,
+                  0.1
                 ],
                 "remasking_strategy_schedule": [
                   "random",
-                  "low_confidence",
+                  "random",
                   "low_confidence"
                 ],
                 "block_schedule": [
-                  106,
-                  11,
-                  5
+                  37,
+                  76,
+                  1
                 ],
                 "extra_step_proportions": [
-                  0.05,
-                  0.75,
-                  0.04
+                  0.24,
+                  0.65,
+                  0.08
                 ],
-                "step_id": 122,
+                "step_id": 114,
                 "block_id": 3
               },
               "children": [
                 {
-                  "value_sum": 0.9999999999999997,
-                  "visits": 13,
-                  "temperature_logprob": -1.1292829513549805,
-                  "remasking_logprob": -0.2654983401298523,
+                  "value_sum": -1.0,
+                  "visits": 1,
+                  "temperature_logprob": -0.6387798190116882,
+                  "remasking_logprob": -0.3313177525997162,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
-                      0.1,
                       0.0,
+                      0.1,
                       0.2
                     ],
                     "remasking_strategy_schedule": [
                       "random",
-                      "low_confidence",
+                      "random",
                       "low_confidence",
                       "low_confidence"
                     ],
                     "block_schedule": [
-                      106,
-                      11,
-                      5,
-                      6
+                      37,
+                      76,
+                      1,
+                      14
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.75,
-                      0.04,
-                      0.16
+                      0.24,
+                      0.65,
+                      0.08,
+                      0.03
                     ],
                     "step_id": 128,
                     "block_id": 4
                   },
-                  "children": [
-                    {
-                      "value_sum": -1.0,
-                      "visits": 1,
-                      "temperature_logprob": -1.1292829513549805,
-                      "remasking_logprob": -0.2654983401298523,
-                      "decoding_policy": {
-                        "temperature_schedule": [
-                          0.2,
-                          0.1,
-                          0.0,
-                          0.2
-                        ],
-                        "remasking_strategy_schedule": [
-                          "random",
-                          "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
-                        ],
-                        "block_schedule": [
-                          106,
-                          11,
-                          5,
-                          6
-                        ],
-                        "extra_step_proportions": [
-                          0.05,
-                          0.75,
-                          0.04,
-                          0.16
-                        ],
-                        "step_id": 128,
-                        "block_id": 4
-                      },
-                      "children": []
-                    },
-                    {
-                      "value_sum": 1.0,
-                      "visits": 1,
-                      "temperature_logprob": -1.1292829513549805,
-                      "remasking_logprob": -0.2654983401298523,
-                      "decoding_policy": {
-                        "temperature_schedule": [
-                          0.2,
-                          0.1,
-                          0.0,
-                          0.2
-                        ],
-                        "remasking_strategy_schedule": [
-                          "random",
-                          "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
-                        ],
-                        "block_schedule": [
-                          106,
-                          11,
-                          5,
-                          6
-                        ],
-                        "extra_step_proportions": [
-                          0.05,
-                          0.75,
-                          0.04,
-                          0.16
-                        ],
-                        "step_id": 128,
-                        "block_id": 4
-                      },
-                      "children": []
-                    }
-                  ]
+                  "children": []
                 },
                 {
-                  "value_sum": -1.0,
+                  "value_sum": 1.0,
                   "visits": 1,
-                  "temperature_logprob": -0.955930769443512,
-                  "remasking_logprob": -1.4559603929519653,
+                  "temperature_logprob": -0.6387798190116882,
+                  "remasking_logprob": -1.2657665014266968,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.2,
-                      0.1,
                       0.0,
-                      0.1
+                      0.1,
+                      0.2
                     ],
                     "remasking_strategy_schedule": [
                       "random",
-                      "low_confidence",
+                      "random",
                       "low_confidence",
                       "random"
                     ],
                     "block_schedule": [
-                      106,
-                      11,
-                      5,
-                      6
+                      37,
+                      76,
+                      1,
+                      14
                     ],
                     "extra_step_proportions": [
-                      0.05,
-                      0.75,
-                      0.04,
-                      0.16
+                      0.24,
+                      0.65,
+                      0.08,
+                      0.03
                     ],
                     "step_id": 128,
                     "block_id": 4
@@ -714,112 +856,112 @@
       ]
     },
     {
-      "value_sum": -1.0000000000000009,
-      "visits": 109,
-      "temperature_logprob": -1.2175477743148804,
-      "remasking_logprob": -0.9513909816741943,
+      "value_sum": -1.0,
+      "visits": 15,
+      "temperature_logprob": -0.876460611820221,
+      "remasking_logprob": -0.42610758543014526,
       "decoding_policy": {
         "temperature_schedule": [
           0.0
         ],
         "remasking_strategy_schedule": [
-          "random"
+          "low_confidence"
         ],
         "block_schedule": [
-          33
+          39
         ],
         "extra_step_proportions": [
-          0.21
+          0.43
         ],
-        "step_id": 33,
+        "step_id": 39,
         "block_id": 1
       },
       "children": [
         {
-          "value_sum": -2.220446049250313e-16,
-          "visits": 49,
-          "temperature_logprob": -0.794779896736145,
-          "remasking_logprob": -0.48869675397872925,
+          "value_sum": 1.0,
+          "visits": 11,
+          "temperature_logprob": -0.8912334442138672,
+          "remasking_logprob": -0.9517724514007568,
           "decoding_policy": {
             "temperature_schedule": [
               0.0,
-              0.1
+              0.2
             ],
             "remasking_strategy_schedule": [
-              "random",
-              "low_confidence"
+              "low_confidence",
+              "random"
             ],
             "block_schedule": [
-              33,
-              52
+              39,
+              67
             ],
             "extra_step_proportions": [
-              0.21,
-              0.64
+              0.43,
+              0.01
             ],
-            "step_id": 85,
+            "step_id": 106,
             "block_id": 2
           },
           "children": [
             {
-              "value_sum": -4.440892098500626e-16,
-              "visits": 25,
-              "temperature_logprob": -0.9398887753486633,
-              "remasking_logprob": -0.32520604133605957,
+              "value_sum": 1.0,
+              "visits": 9,
+              "temperature_logprob": -1.6888227462768555,
+              "remasking_logprob": -0.4419253170490265,
               "decoding_policy": {
                 "temperature_schedule": [
                   0.0,
-                  0.1,
+                  0.2,
                   0.0
                 ],
                 "remasking_strategy_schedule": [
-                  "random",
                   "low_confidence",
+                  "random",
                   "low_confidence"
                 ],
                 "block_schedule": [
-                  33,
-                  52,
-                  6
+                  39,
+                  67,
+                  9
                 ],
                 "extra_step_proportions": [
-                  0.21,
-                  0.64,
-                  0.06
+                  0.43,
+                  0.01,
+                  0.25
                 ],
-                "step_id": 91,
+                "step_id": 115,
                 "block_id": 3
               },
               "children": [
                 {
                   "value_sum": -1.0,
                   "visits": 1,
-                  "temperature_logprob": -0.9711092114448547,
-                  "remasking_logprob": -0.2482806146144867,
+                  "temperature_logprob": -0.9620363712310791,
+                  "remasking_logprob": -0.879035234451294,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.0,
-                      0.1,
+                      0.2,
                       0.0,
                       0.1
                     ],
                     "remasking_strategy_schedule": [
+                      "low_confidence",
                       "random",
                       "low_confidence",
-                      "low_confidence",
-                      "low_confidence"
+                      "random"
                     ],
                     "block_schedule": [
-                      33,
-                      52,
-                      6,
-                      37
+                      39,
+                      67,
+                      9,
+                      13
                     ],
                     "extra_step_proportions": [
-                      0.21,
-                      0.64,
-                      0.06,
-                      0.09
+                      0.43,
+                      0.01,
+                      0.25,
+                      0.31
                     ],
                     "step_id": 128,
                     "block_id": 4
@@ -828,33 +970,33 @@
                 },
                 {
                   "value_sum": 1.0,
-                  "visits": 13,
-                  "temperature_logprob": -0.9676907062530518,
-                  "remasking_logprob": -1.5147686004638672,
+                  "visits": 7,
+                  "temperature_logprob": -0.9620363712310791,
+                  "remasking_logprob": -0.536456823348999,
                   "decoding_policy": {
                     "temperature_schedule": [
                       0.0,
-                      0.1,
+                      0.2,
                       0.0,
-                      0.0
+                      0.1
                     ],
                     "remasking_strategy_schedule": [
+                      "low_confidence",
                       "random",
                       "low_confidence",
-                      "low_confidence",
-                      "random"
+                      "low_confidence"
                     ],
                     "block_schedule": [
-                      33,
-                      52,
-                      6,
-                      37
+                      39,
+                      67,
+                      9,
+                      13
                     ],
                     "extra_step_proportions": [
-                      0.21,
-                      0.64,
-                      0.06,
-                      0.09
+                      0.43,
+                      0.01,
+                      0.25,
+                      0.31
                     ],
                     "step_id": 128,
                     "block_id": 4
@@ -862,315 +1004,225 @@
                   "children": [
                     {
                       "value_sum": 0.0,
-                      "visits": 1,
-                      "temperature_logprob": -0.9676907062530518,
-                      "remasking_logprob": -1.5147686004638672,
+                      "visits": 3,
+                      "temperature_logprob": -0.9620363712310791,
+                      "remasking_logprob": -0.536456823348999,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.0,
-                          0.1,
+                          0.2,
                           0.0,
-                          0.0
+                          0.1
                         ],
                         "remasking_strategy_schedule": [
+                          "low_confidence",
                           "random",
                           "low_confidence",
-                          "low_confidence",
-                          "random"
+                          "low_confidence"
                         ],
                         "block_schedule": [
-                          33,
-                          52,
-                          6,
-                          37
+                          39,
+                          67,
+                          9,
+                          13
                         ],
                         "extra_step_proportions": [
-                          0.21,
-                          0.64,
-                          0.06,
-                          0.09
+                          0.43,
+                          0.01,
+                          0.25,
+                          0.31
                         ],
                         "step_id": 128,
                         "block_id": 4
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "value_sum": 1.0,
+                          "visits": 1,
+                          "temperature_logprob": -0.9620363712310791,
+                          "remasking_logprob": -0.536456823348999,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.0,
+                              0.2,
+                              0.0,
+                              0.1
+                            ],
+                            "remasking_strategy_schedule": [
+                              "low_confidence",
+                              "random",
+                              "low_confidence",
+                              "low_confidence"
+                            ],
+                            "block_schedule": [
+                              39,
+                              67,
+                              9,
+                              13
+                            ],
+                            "extra_step_proportions": [
+                              0.43,
+                              0.01,
+                              0.25,
+                              0.31
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": []
+                        },
+                        {
+                          "value_sum": -1.0,
+                          "visits": 1,
+                          "temperature_logprob": -0.9620363712310791,
+                          "remasking_logprob": -0.536456823348999,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.0,
+                              0.2,
+                              0.0,
+                              0.1
+                            ],
+                            "remasking_strategy_schedule": [
+                              "low_confidence",
+                              "random",
+                              "low_confidence",
+                              "low_confidence"
+                            ],
+                            "block_schedule": [
+                              39,
+                              67,
+                              9,
+                              13
+                            ],
+                            "extra_step_proportions": [
+                              0.43,
+                              0.01,
+                              0.25,
+                              0.31
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": []
+                        }
+                      ]
                     },
                     {
                       "value_sum": 0.0,
-                      "visits": 1,
-                      "temperature_logprob": -0.9676907062530518,
-                      "remasking_logprob": -1.5147686004638672,
+                      "visits": 3,
+                      "temperature_logprob": -0.9620363712310791,
+                      "remasking_logprob": -0.536456823348999,
                       "decoding_policy": {
                         "temperature_schedule": [
                           0.0,
-                          0.1,
+                          0.2,
                           0.0,
-                          0.0
+                          0.1
                         ],
                         "remasking_strategy_schedule": [
+                          "low_confidence",
                           "random",
                           "low_confidence",
-                          "low_confidence",
-                          "random"
+                          "low_confidence"
                         ],
                         "block_schedule": [
-                          33,
-                          52,
-                          6,
-                          37
+                          39,
+                          67,
+                          9,
+                          13
                         ],
                         "extra_step_proportions": [
-                          0.21,
-                          0.64,
-                          0.06,
-                          0.09
+                          0.43,
+                          0.01,
+                          0.25,
+                          0.31
                         ],
                         "step_id": 128,
                         "block_id": 4
                       },
-                      "children": []
+                      "children": [
+                        {
+                          "value_sum": 0.0,
+                          "visits": 1,
+                          "temperature_logprob": -0.9620363712310791,
+                          "remasking_logprob": -0.536456823348999,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.0,
+                              0.2,
+                              0.0,
+                              0.1
+                            ],
+                            "remasking_strategy_schedule": [
+                              "low_confidence",
+                              "random",
+                              "low_confidence",
+                              "low_confidence"
+                            ],
+                            "block_schedule": [
+                              39,
+                              67,
+                              9,
+                              13
+                            ],
+                            "extra_step_proportions": [
+                              0.43,
+                              0.01,
+                              0.25,
+                              0.31
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": []
+                        },
+                        {
+                          "value_sum": 0.0,
+                          "visits": 1,
+                          "temperature_logprob": -0.9620363712310791,
+                          "remasking_logprob": -0.536456823348999,
+                          "decoding_policy": {
+                            "temperature_schedule": [
+                              0.0,
+                              0.2,
+                              0.0,
+                              0.1
+                            ],
+                            "remasking_strategy_schedule": [
+                              "low_confidence",
+                              "random",
+                              "low_confidence",
+                              "low_confidence"
+                            ],
+                            "block_schedule": [
+                              39,
+                              67,
+                              9,
+                              13
+                            ],
+                            "extra_step_proportions": [
+                              0.43,
+                              0.01,
+                              0.25,
+                              0.31
+                            ],
+                            "step_id": 128,
+                            "block_id": 4
+                          },
+                          "children": []
+                        }
+                      ]
                     }
                   ]
                 }
               ]
             },
             {
-              "value_sum": 1.1102230246251565e-16,
-              "visits": 13,
-              "temperature_logprob": -1.2515374422073364,
-              "remasking_logprob": -0.32520604133605957,
-              "decoding_policy": {
-                "temperature_schedule": [
-                  0.0,
-                  0.1,
-                  0.2
-                ],
-                "remasking_strategy_schedule": [
-                  "random",
-                  "low_confidence",
-                  "low_confidence"
-                ],
-                "block_schedule": [
-                  33,
-                  52,
-                  18
-                ],
-                "extra_step_proportions": [
-                  0.21,
-                  0.64,
-                  0.05
-                ],
-                "step_id": 103,
-                "block_id": 3
-              },
-              "children": [
-                {
-                  "value_sum": 0.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.341629147529602,
-                  "remasking_logprob": -1.4583028554916382,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.1,
-                      0.2,
-                      0.2
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "random"
-                    ],
-                    "block_schedule": [
-                      33,
-                      52,
-                      18,
-                      25
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.64,
-                      0.05,
-                      0.1
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                },
-                {
-                  "value_sum": 0.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.578477382659912,
-                  "remasking_logprob": -0.26478713750839233,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.1,
-                      0.2,
-                      0.0
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "low_confidence"
-                    ],
-                    "block_schedule": [
-                      33,
-                      52,
-                      18,
-                      25
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.64,
-                      0.05,
-                      0.1
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "value_sum": -2.220446049250313e-16,
-          "visits": 49,
-          "temperature_logprob": -1.4031100273132324,
-          "remasking_logprob": -0.48869675397872925,
-          "decoding_policy": {
-            "temperature_schedule": [
-              0.0,
-              0.2
-            ],
-            "remasking_strategy_schedule": [
-              "random",
-              "low_confidence"
-            ],
-            "block_schedule": [
-              33,
-              81
-            ],
-            "extra_step_proportions": [
-              0.21,
-              0.62
-            ],
-            "step_id": 114,
-            "block_id": 2
-          },
-          "children": [
-            {
               "value_sum": -1.0,
-              "visits": 13,
-              "temperature_logprob": -0.7342463731765747,
-              "remasking_logprob": -0.2404959350824356,
-              "decoding_policy": {
-                "temperature_schedule": [
-                  0.0,
-                  0.2,
-                  0.0
-                ],
-                "remasking_strategy_schedule": [
-                  "random",
-                  "low_confidence",
-                  "low_confidence"
-                ],
-                "block_schedule": [
-                  33,
-                  81,
-                  6
-                ],
-                "extra_step_proportions": [
-                  0.21,
-                  0.62,
-                  0.05
-                ],
-                "step_id": 120,
-                "block_id": 3
-              },
-              "children": [
-                {
-                  "value_sum": 0.0,
-                  "visits": 1,
-                  "temperature_logprob": -0.6305637359619141,
-                  "remasking_logprob": -0.26478713750839233,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.2,
-                      0.0,
-                      0.1
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "low_confidence"
-                    ],
-                    "block_schedule": [
-                      33,
-                      81,
-                      6,
-                      8
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.62,
-                      0.05,
-                      0.12
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                },
-                {
-                  "value_sum": 0.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.578477382659912,
-                  "remasking_logprob": -1.4583028554916382,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.2,
-                      0.0,
-                      0.0
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "random"
-                    ],
-                    "block_schedule": [
-                      33,
-                      81,
-                      6,
-                      8
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.62,
-                      0.05,
-                      0.12
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "value_sum": 0.9999999999999996,
-              "visits": 25,
-              "temperature_logprob": -1.1738768815994263,
-              "remasking_logprob": -0.2404959350824356,
+              "visits": 1,
+              "temperature_logprob": -0.959385335445404,
+              "remasking_logprob": -0.4419253170490265,
               "decoding_policy": {
                 "temperature_schedule": [
                   0.0,
@@ -1178,166 +1230,114 @@
                   0.1
                 ],
                 "remasking_strategy_schedule": [
+                  "low_confidence",
                   "random",
+                  "low_confidence"
+                ],
+                "block_schedule": [
+                  39,
+                  67,
+                  8
+                ],
+                "extra_step_proportions": [
+                  0.43,
+                  0.01,
+                  0.47
+                ],
+                "step_id": 114,
+                "block_id": 3
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "value_sum": -1.0,
+          "visits": 3,
+          "temperature_logprob": -0.8912334442138672,
+          "remasking_logprob": -0.4878518581390381,
+          "decoding_policy": {
+            "temperature_schedule": [
+              0.0,
+              0.2
+            ],
+            "remasking_strategy_schedule": [
+              "low_confidence",
+              "low_confidence"
+            ],
+            "block_schedule": [
+              39,
+              51
+            ],
+            "extra_step_proportions": [
+              0.43,
+              0.48
+            ],
+            "step_id": 90,
+            "block_id": 2
+          },
+          "children": [
+            {
+              "value_sum": 0.0,
+              "visits": 1,
+              "temperature_logprob": -1.2295221090316772,
+              "remasking_logprob": -1.0840009450912476,
+              "decoding_policy": {
+                "temperature_schedule": [
+                  0.0,
+                  0.2,
+                  0.1
+                ],
+                "remasking_strategy_schedule": [
+                  "low_confidence",
+                  "low_confidence",
+                  "random"
+                ],
+                "block_schedule": [
+                  39,
+                  51,
+                  6
+                ],
+                "extra_step_proportions": [
+                  0.43,
+                  0.48,
+                  0.09
+                ],
+                "step_id": 96,
+                "block_id": 3
+              },
+              "children": []
+            },
+            {
+              "value_sum": 0.0,
+              "visits": 1,
+              "temperature_logprob": -1.2295221090316772,
+              "remasking_logprob": -0.4128516614437103,
+              "decoding_policy": {
+                "temperature_schedule": [
+                  0.0,
+                  0.2,
+                  0.1
+                ],
+                "remasking_strategy_schedule": [
+                  "low_confidence",
                   "low_confidence",
                   "low_confidence"
                 ],
                 "block_schedule": [
-                  33,
-                  81,
-                  13
+                  39,
+                  51,
+                  36
                 ],
                 "extra_step_proportions": [
-                  0.21,
-                  0.62,
-                  0.16
+                  0.43,
+                  0.48,
+                  0.02
                 ],
-                "step_id": 127,
+                "step_id": 126,
                 "block_id": 3
               },
-              "children": [
-                {
-                  "value_sum": -2.220446049250313e-16,
-                  "visits": 13,
-                  "temperature_logprob": -1.0500675439834595,
-                  "remasking_logprob": -0.24305880069732666,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.2,
-                      0.1,
-                      0.1
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "low_confidence"
-                    ],
-                    "block_schedule": [
-                      33,
-                      81,
-                      13,
-                      1
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.62,
-                      0.16,
-                      0.01
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": [
-                    {
-                      "value_sum": 0.0,
-                      "visits": 1,
-                      "temperature_logprob": -1.0500675439834595,
-                      "remasking_logprob": -0.24305880069732666,
-                      "decoding_policy": {
-                        "temperature_schedule": [
-                          0.0,
-                          0.2,
-                          0.1,
-                          0.1
-                        ],
-                        "remasking_strategy_schedule": [
-                          "random",
-                          "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
-                        ],
-                        "block_schedule": [
-                          33,
-                          81,
-                          13,
-                          1
-                        ],
-                        "extra_step_proportions": [
-                          0.21,
-                          0.62,
-                          0.16,
-                          0.01
-                        ],
-                        "step_id": 128,
-                        "block_id": 4
-                      },
-                      "children": []
-                    },
-                    {
-                      "value_sum": 0.0,
-                      "visits": 1,
-                      "temperature_logprob": -1.0500675439834595,
-                      "remasking_logprob": -0.24305880069732666,
-                      "decoding_policy": {
-                        "temperature_schedule": [
-                          0.0,
-                          0.2,
-                          0.1,
-                          0.1
-                        ],
-                        "remasking_strategy_schedule": [
-                          "random",
-                          "low_confidence",
-                          "low_confidence",
-                          "low_confidence"
-                        ],
-                        "block_schedule": [
-                          33,
-                          81,
-                          13,
-                          1
-                        ],
-                        "extra_step_proportions": [
-                          0.21,
-                          0.62,
-                          0.16,
-                          0.01
-                        ],
-                        "step_id": 128,
-                        "block_id": 4
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "value_sum": 0.0,
-                  "visits": 1,
-                  "temperature_logprob": -1.1234196424484253,
-                  "remasking_logprob": -1.533521056175232,
-                  "decoding_policy": {
-                    "temperature_schedule": [
-                      0.0,
-                      0.2,
-                      0.1,
-                      0.2
-                    ],
-                    "remasking_strategy_schedule": [
-                      "random",
-                      "low_confidence",
-                      "low_confidence",
-                      "random"
-                    ],
-                    "block_schedule": [
-                      33,
-                      81,
-                      13,
-                      1
-                    ],
-                    "extra_step_proportions": [
-                      0.21,
-                      0.62,
-                      0.16,
-                      0.01
-                    ],
-                    "step_id": 128,
-                    "block_id": 4
-                  },
-                  "children": []
-                }
-              ]
+              "children": []
             }
           ]
         }

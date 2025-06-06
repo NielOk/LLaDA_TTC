@@ -4,10 +4,10 @@
     "model_name": "GSAI-ML/LLaDA-8B-Instruct",
     "num_questions_sampled_for_testing": 1,
     "folio_test_dataset_prompts": [
-      "The following facts are given: If an album is written by a rock band, then the genre of the album is rock.\nIf a band writes an album winning an award, then this band wins this award.\nTrouble at the Henhouse is an album by The Tragically Hip.\nThe Tragically Hip is a Canadian rock band.\nThe song \"Butts Wigglin'\" is in Trouble at the Henhouse.\nTrouble at the Henhouse won the Album of the Year award.\nA song in Trouble at the Henhouse appeared in a film.. Is the conclusion \"The genre of Trouble at the Henhouse is rock.\" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself as your final answer: False, Uncertain, or True"
+      "The following facts are given: Phoneix's music is classified under the indie pop genre.\nPhoenix is a band from France.\nFrench bands write songs in French or in English.\nAside from indie pop, pop rock and synth-pop are two other genres of music.\nPhoenix has no songs in French.. Is the conclusion \"Phoneix's music is classified under the pop rock genre.\" logically entailed by the above facts? Think out loud step by step and, on a new line, write one of the following three options by itself as your final answer: False, Uncertain, or True"
     ],
     "folio_test_dataset_labels": [
-      "True"
+      "False"
     ],
     "steps": 256,
     "iters": 20,
@@ -30,7 +30,59 @@
   "test_time_policy_0": {
     "temperature_schedule": [
       0.2,
-      0.1,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "remasking_strategy_schedule": [
+      "random",
+      "low_confidence",
+      "low_confidence",
+      "low_confidence"
+    ],
+    "block_schedule": [
+      37,
+      58,
+      26,
+      7
+    ],
+    "extra_step_proportions": [
+      0.24,
+      0.38,
+      0.04,
+      0.34
+    ]
+  },
+  "test_time_policy_1": {
+    "temperature_schedule": [
+      0.2,
+      0.0,
+      0.2,
+      0.2
+    ],
+    "remasking_strategy_schedule": [
+      "random",
+      "random",
+      "low_confidence",
+      "random"
+    ],
+    "block_schedule": [
+      37,
+      76,
+      8,
+      7
+    ],
+    "extra_step_proportions": [
+      0.24,
+      0.65,
+      0.07,
+      0.04
+    ]
+  },
+  "test_time_policy_2": {
+    "temperature_schedule": [
+      0.2,
+      0.0,
       0.1,
       0.2
     ],
@@ -38,71 +90,19 @@
       "random",
       "random",
       "low_confidence",
-      "low_confidence"
+      "random"
     ],
     "block_schedule": [
-      106,
-      3,
-      6,
-      13
+      37,
+      76,
+      1,
+      14
     ],
     "extra_step_proportions": [
-      0.05,
-      0.01,
-      0.2,
-      0.74
-    ]
-  },
-  "test_time_policy_1": {
-    "temperature_schedule": [
-      0.2,
-      0.1,
-      0.0,
-      0.0
-    ],
-    "remasking_strategy_schedule": [
-      "random",
-      "random",
-      "low_confidence",
-      "low_confidence"
-    ],
-    "block_schedule": [
-      106,
-      3,
-      17,
-      2
-    ],
-    "extra_step_proportions": [
-      0.05,
-      0.01,
-      0.82,
-      0.12
-    ]
-  },
-  "test_time_policy_2": {
-    "temperature_schedule": [
-      0.2,
-      0.1,
-      0.0,
-      0.0
-    ],
-    "remasking_strategy_schedule": [
-      "random",
-      "low_confidence",
-      "low_confidence",
-      "low_confidence"
-    ],
-    "block_schedule": [
-      106,
-      11,
-      9,
-      2
-    ],
-    "extra_step_proportions": [
-      0.05,
-      0.75,
-      0.15,
-      0.05
+      0.24,
+      0.65,
+      0.08,
+      0.03
     ]
   }
 }

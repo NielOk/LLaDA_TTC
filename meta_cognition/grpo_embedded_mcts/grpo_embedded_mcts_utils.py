@@ -164,7 +164,7 @@ def compute_reward(prompt, output):
 # === GRPO Update with Reward Propagation ===
 def compute_normalized_advantages(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs):
     """
-    Compute normalized advantages for each child.
+    Compute normalized advantages for each child. For this paper, prompts is length 1.
     """
     print("=== GRPO Update ===")
     n_prompts = len(prompts)
@@ -326,7 +326,7 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
                 known_param_ids.update(id(p) for p in new_params)
                 all_logits.extend(new_params)
 
-            propagate_value_upward(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
+            propagate_value_upward(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs)
 
     # === Collect and rank final leaf nodes ===
     all_leaves = []
