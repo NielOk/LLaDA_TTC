@@ -162,12 +162,10 @@ def compute_reward(prompt, output):
 
 
 # === GRPO Update with Reward Propagation ===
-def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs):
-    '''
-    For each child decoding policy, evaluate it on each prompt.
-    Then normalize the reward per prompt and compute the total advantage.
-    Apply GRPO by computing gradient loss from log softmax and advantages.
-    '''
+def compute_normalized_advantages(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs):
+    """
+    Compute normalized advantages for each child.
+    """
     print("=== GRPO Update ===")
     n_prompts = len(prompts)
     n_children = len(children)
@@ -212,6 +210,21 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
 
     advantages = [(a - mean_adv) / std_adv for a in advantages]
 
+    return advantages, n_children
+
+
+def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs):
+    '''
+    For each child decoding policy, evaluate it on each prompt.
+    Then normalize the reward per prompt and compute the total advantage.
+    Apply GRPO by computing gradient loss from log softmax and advantages.
+    '''
+
+    # Compute normalized advantages
+    advantages, n_children = compute_normalized_advantages(
+        children, model, tokenizer, prompts, labels, steps, **sampling_kwargs
+    )
+
     # Step 5: Safe GRPO loss with recomputed logprobs
     losses = []
 
@@ -248,8 +261,18 @@ def grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, o
         total_loss.backward()
         optimizer.step()
 
+
+def propagate_value_upward(children, model, tokenizer, prompts, labels, steps, **sampling_kwargs):
+    """
+    Propagate the computed advantages upward in the MCTS tree after final expansion of node.
+    """
+    advantages, n_children = compute_normalized_advantages(
+        children, model, tokenizer, prompts, labels, steps, **sampling_kwargs
+    )
+
     # Step 6: Propagate value upward
     for i, child in enumerate(children):
+        
         node = child
         while node is not None:
             node.value_sum += advantages[i]
@@ -303,7 +326,7 @@ def search_shared(model, tokenizer, prompts, labels, steps=128, iters=30, branch
                 known_param_ids.update(id(p) for p in new_params)
                 all_logits.extend(new_params)
 
-            grpo_update_per_prompt(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
+            propagate_value_upward(children, model, tokenizer, prompts, labels, steps, optimizer, **sampling_kwargs)
 
     # === Collect and rank final leaf nodes ===
     all_leaves = []
