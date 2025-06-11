@@ -1,1 +1,0 @@
-To get actually useful information and mappings of entropies across different prompts, we probably want to take a benchmark and sample questions from it.
