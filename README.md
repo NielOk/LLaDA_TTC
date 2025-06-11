@@ -1,5 +1,5 @@
 # LLaDA_TTC
-TL;DR: We introduce a test-time inference framework—GRPO-embedded Monte Carlo Tree Search (GRPO-MCTS)—that enables language models to optimize how they decode, not just what they decode. Rather than relying on static decoding strategies, our approach performs structured search over blockwise inference schedules customized for each input prompt. 
+TL;DR: We introduce a test-time inference framework—GRPO-embedded Monte Carlo Tree Search (GRPO-MCTS)—that enables text diffusion models to optimize how they decode, not just what they decode. Rather than relying on static decoding strategies, our approach performs structured search over blockwise inference schedules customized for each input prompt. 
 
 Each decoding policy is a structured program specifying temperature, remasking strategy, step allocation, and compute distribution. GRPO-MCTS explores this policy space using Monte Carlo Tree Search, while applying Group-Relative Policy Optimization (GRPO) at each node to learn reward-aligned sampling behavior. This two-level structure, search over decoding blocks and local optimization over rollouts, forms a dynamic system of structured metacognition. Scaling is controlled by the breadth of the tree search and the precision of GRPO updates.
 
